@@ -1,0 +1,27 @@
+header = {
+    'classes' : ('Match', 'UseAfter'),
+    'derived_from' : 'Hand-made, SCSB, 2024-04',
+    'file_ext' : '.asdf',
+    'filekind' : 'PARS-EXPOSUREPIPELINE',
+    'filetype' : 'PARS-EXPOSUREPIPELINE',
+    'instrument' : 'WFI',
+    'mapping' : 'REFERENCE',
+    'name' : 'roman_wfi_pars-exposurepipeline.rmap',
+    'observatory' : 'ROMAN',
+    'parkey' : (('ROMAN.META.EXPOSURE.TYPE',), ('ROMAN.META.EXPOSURE.START_TIME',)),
+    'reference_to_dataset' : {
+        'META.EXPOSURE.START_TIME' : 'ROMAN.META.EXPOSURE.START_TIME',
+        'META.EXPOSURE.TYPE' : 'ROMAN.META.EXPOSURE.TYPE',
+    },
+    'sha1sum' : '8a30602dce0211e962dac8988a35b3621287b564',
+    'suffix' : 'pars-exposurepipeline',
+    'text_descr' : 'Step parameters for ExposurePipeline',
+}
+
+comment = """
+Step parameter references are ROMAN step and pipeline configurations.
+This reftype provides the configuration for romancal.pipeline.ExposurePipeline
+"""
+
+selector = Match({
+})

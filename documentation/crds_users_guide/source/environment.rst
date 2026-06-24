@@ -4,6 +4,8 @@ Environment Variables
 Configuring CRDS for pipeline or offsite personal use is accomplished by setting
 shell environment variables.
 
+*Looking for AWS configuration? See the* :ref:`aws` *section of this guide.*
+
 Basic Environment
 -----------------
 
@@ -255,9 +257,9 @@ CRDS Context
 
 The CRDS context file defines a version of CRDS rules used to assign best references.
 
-The CRDS context used to evaluate CRDS best references defaults to `{observatory}`-operational, e.g. `jwst-operational`.  This is an indirect name for the context in use or soon-to-be in use in the archive pipeline.
+The CRDS context used to evaluate CRDS best references defaults to `{observatory}`-latest, e.g. `jwst-latest`.  This is an indirect name for the context in use or soon-to-be in use in the archive pipeline.
 
-During development `-operational` corresponds to the latest context which is sufficiently mature for broad use and is automatic.
+During development `-latest` corresponds to the latest context which is sufficiently mature for broad use and is automatic.
 
 The context used can be overridden to some specific historical or experimental context by setting
 the **CRDS_CONTEXT** environment variable:
@@ -286,42 +288,6 @@ the **CRDS_CONTEXT** environment variable:
 **CRDS_CONTEXT** does not override command line switches or parameters passed explicitly to the
 crds.getreferences() API function.
 
-
-AWS
----
-
-The CRDS client can be configured to read files from Amazon's S3 service.  The STScI AWS environment
-currently hosts files in the following buckets:
-
-+-----------------+-----------------------+
-| Environment     | S3 Bucket Name        |
-+=================+=======================+
-| HST OPS         | hst-crds-cache-ops    |
-+-----------------+-----------------------+
-| HST TEST        | hst-crds-cache-test   |
-+-----------------+-----------------------+
-| ROMAN TEST†     | roman-crds-cache-test |
-+-----------------+-----------------------+
-
-† As of this writing, Roman crds cache on AWS is not yet available.
-
-The S3 buckets contain only recent contexts.  They also exclude mapping files, so the client must be
-configured to load the context's rules from a pickle file.  Here is an example configuration for the
-HST OPS bucket:
-
-  .. code-block:: bash
-      
-      $ export CRDS_CONFIG_URI=s3://hst-crds-cache-ops/config/hst/
-      $ export CRDS_DOWNLOAD_MODE=plugin
-      $ export CRDS_DOWNLOAD_PLUGIN='crds_s3_get ${SOURCE_URL} ${OUTPUT_PATH} --file-size ${FILE_SIZE} --file-sha1sum ${FILE_SHA1SUM}'
-      $ export CRDS_PATH=/path/to/local/cache
-      $ export CRDS_PICKLE_URI=s3://hst-crds-cache-ops/pickles/hst/
-      $ export CRDS_REFERENCE_URI=s3://hst-crds-cache-ops/references/hst/
-      $ export CRDS_SERVER_URL=https://hst-crds-serverless.stsci.edu
-      $ export CRDS_USE_PICKLED_CONTEXTS=1
-
-**NOTE** Your compute environment must be configured with AWS credentials that have been granted access
-to the bucket.
 
 Advanced Environment
 --------------------
@@ -434,7 +400,7 @@ contains project specific sub-directories::
 
 - *references* contains reference files themselves
 
-- *config* contains system configuration information like operational context and bad files
+- *config* contains system configuration information like latest context and bad files
 
 Inidivdual branches of a cache can be overriden to locate that branch outside the directory
 tree specified by `CRDS_PATH`. The remaining directories can be overriden as well or derived

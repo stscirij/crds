@@ -699,6 +699,12 @@ def _get_s3_uri_content(s3_uri, mode):
     s3 = boto3.resource("s3")
     obj = s3.Object(bucket_name, key)
     binary = obj.get()["Body"].read()
+    if config.get_cache_readonly() is False:
+        try:
+            import subprocess
+            p = subprocess.run(["crds_s3_get", s3_uri], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
+        except Exception as e:
+            print(p.stderr)
     if mode == "text":
         text = binary.decode("utf-8")
         return text
@@ -1017,7 +1023,18 @@ def instrument_to_observatory(instrument):
     Traceback (most recent call last):
     ...
     ValueError: Unknown instrument 'foo'
+    >>> instrument_to_observatory("NONHST")
+    'hst'
+
+    Notes
+    -----
+    For instrument "NONHST", some funny business happens. This occurs for synphot throughput
+    reference ingestion. When doing synphot, the observatory can be anything. At this point, if the
+    reference is not directly related to a known observatory/instrument, and the reference meta
+    indicates "NONHST" for instrument, just use "hst".
     """
+    if "nonhst" in instrument.lower():
+        return "hst"
     instrument = fix_instrument(instrument.lower())
     for (obs, instr) in observatory_instrument_tuples():
         if instrument == instr:

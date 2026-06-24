@@ -60,7 +60,7 @@ import pickle
 from . import rmap, log, utils, config
 from .constants import ALL_OBSERVATORIES
 from .log import srepr
-from .exceptions import CrdsError, CrdsBadRulesError, CrdsBadReferenceError, CrdsConfigError, CrdsDownloadError
+from .exceptions import CrdsError, CrdsBadRulesError, CrdsBadReferenceError, CrdsConfigError, CrdsDownloadError, CrdsNetworkError, ServiceError
 from crds.client import api
 
 # import crds  # forward
@@ -125,7 +125,7 @@ def getreferences(parameters, reftypes=None, context=None, ignore_cache=False,
     # Attempt to cache the recommended references,  which unlike dump_mappings
     # should work without network access if files are already cached.
     best_refs_paths = api.cache_references(
-        final_context, bestrefs, ignore_cache=ignore_cache)
+        final_context, bestrefs, ignore_cache=ignore_cache, parameters=check_parameters(parameters))
 
     return best_refs_paths
 
@@ -210,7 +210,7 @@ def _initial_recommendations(
 
     log.verbose("Final effective context is", repr(final_context))
 
-    if mode == "local":
+    if mode in ["local", "s3"]:
         log.verbose("Computing best references locally.")
         bestrefs = local_bestrefs(
             parameters, reftypes=reftypes, context=final_context, ignore_cache=ignore_cache)
@@ -404,7 +404,7 @@ def get_context_name(observatory, context=None):
     """Return the .pmap name of the default context based on:
 
     1. literal definitiion in `context` (jwst_0001.pmap)
-    2. symbolic definition in `context` (jwst-operational or jwst-edit)
+    2. symbolic definition in `context` (latest or jwst-edit)
     3. date-based definition in `context` (jwst-2017-01-15T00:05:00)
     4. CRDS_CONTEXT env var override
 
@@ -415,23 +415,45 @@ def get_context_name(observatory, context=None):
 
 def get_final_context(info, context):
     """Based on env CRDS_CONTEXT, the `context` parameter, and the server's reported,
-    cached, or defaulted `operational_context`,  choose the pipeline mapping which
+    cached, or defaulted `latest_context`,  choose the pipeline mapping which
     defines the reference selection rules.
 
     Returns   a .pmap name
     """
     env_context = config.get_crds_env_context()
-    if context:  # context parameter trumps all, <observatory>-operational is default
-        input_context = context
+    try:
+        latest_context = str(info.latest_context)
+    except AttributeError:
+        latest_context = str(info.operational_context)
+    if context:  # context parameter trumps all, <observatory>-latest is default
+        if context == 'latest':
+            input_context = latest_context
+        elif context == 'build':
+            input_context = api.get_build_context(info.observatory)
+        else:
+            input_context = context
         log.verbose("Using reference file selection rules", srepr(input_context), "defined by caller.")
         info.status = "context parameter"
     elif env_context:
-        input_context = env_context
+        if env_context in ['latest', f"{info.observatory}-operational", f"{info.observatory}-latest"]:
+            input_context = latest_context
+        elif env_context in ['build', f"{info.observatory}-build"]:
+            input_context = api.get_build_context(info.observatory)
+        else:
+            input_context = env_context
         log.verbose("Using reference file selection rules", srepr(input_context),
                     "defined by environment CRDS_CONTEXT.")
         info.status = "env var CRDS_CONTEXT"
     else:
-        input_context = str(info.operational_context)
+        # Default for JWST if no env context and no explicit context is BUILD CONTEXT for installed jwst version
+        if info.observatory == 'jwst':
+            try:
+                input_context = api.get_build_context('jwst')
+            except (ServiceError, AttributeError):
+                input_context = latest_context
+        # For other missions, default is latest (formerly operational) context
+        else:
+            input_context = latest_context
         log.verbose("Using reference file selection rules", srepr(input_context), "defined by", info.status + ".")
     final_context = translate_date_based_context(input_context, info.observatory)
     return final_context
@@ -453,8 +475,10 @@ def translate_date_based_context(context, observatory=None):
 
     info = get_config_info(observatory)
 
-    if context == info.observatory + "-operational":
-        return info["operational_context"]
+    latest_context_names = [info.observatory + "-operational", info.observatory + "-latest", "latest"]
+
+    if context in latest_context_names:
+        return info.get('latest_context', info['operational_context'])
     elif context == info.observatory + "-edit":
         return info["edit_context"]
     elif context == info.observatory + "-versions":
@@ -494,7 +518,7 @@ class ConfigInfo(utils.Struct):
 
         returns 'local' or 'remote'
         """
-        mode = config.get_crds_processing_mode()  # local, remote, auto
+        mode = config.get_crds_processing_mode()  # local, remote, auto, s3
         if mode == "auto":
             eff_mode = "remote" if (self.connected and hasattr(self, "force_remote_mode") and self.force_remote_mode) else "local"
         else:
@@ -507,7 +531,7 @@ class ConfigInfo(utils.Struct):
 
 @utils.cached
 def get_config_info(observatory):
-    """Get the operational context and server s/w version from (in order of priority):
+    """Get the latest context and server s/w version from (in order of priority):
 
     1. The server.
     2. The cache from a prior server access.
@@ -523,8 +547,8 @@ def get_config_info(observatory):
                 info.status = "cache"
                 info.connected = True
                 log.verbose("Using CACHED CRDS reference assignment rules last updated on", repr(info.last_synced))
-    except CrdsError as exc:
-        if "serverless" not in api.get_crds_server():
+    except (CrdsError,NameError,CrdsNetworkError) as exc:
+        if "serverless" not in api.get_crds_server(obs=observatory):
             log.verbose_warning("Couldn't contact CRDS server:", srepr(api.get_crds_server()), ":", str(exc))
         info = load_server_info(observatory)
         info.status = "cache"
@@ -534,10 +558,16 @@ def get_config_info(observatory):
         raise CrdsConfigError(
             "CRDS server at", repr(api.get_crds_server()),
             "is inconsistent with observatory", repr(observatory) + ".",
-            "You may be configured for the wrong project.  "
-            "Check CRDS_SERVER_URL and CRDS_OBSERVATORY "
-            "environment settings.  See https://jwst-crds.stsci.edu/docs/cmdline_bestrefs/ (JWST) "
-            "or https://hst-crds.stsci.edu/docs/cmdline_bestrefs/ (HST) for information on configuring CRDS.")
+            "You may be configured for the wrong project.\n"
+            "Check CRDS_SERVER_URL and CRDS_OBSERVATORY environment settings.\n"
+            "If your CRDS_SERVER_URL is correct, you may wish to set your CRDS_OBSERVATORY to\n"
+            f"{repr(info.observatory)}.\n"
+            "Otherwise if your CRDS_OBSERVATORY is correct, you may wish to set your CRDS_SERVER_URL to\n"
+            f"'https://{observatory}-crds.stsci.edu'\n"
+            "See https://jwst-crds.stsci.edu/docs/cmdline_bestrefs/ (JWST), \n"
+            "https://roman-crds.stsci.edu/docs/cmdline_bestrefs/ (ROMAN), or \n"
+            "https://hst-crds.stsci.edu/docs/cmdline_bestrefs/ (HST) \n"
+            "for information on configuring CRDS.")
     return info
 
 @utils.cached # effectively a "once" directive
@@ -548,7 +578,7 @@ def update_config_info(observatory):
     if config.writable_cache_or_verbose("skipping config update."):
         info = get_config_info(observatory)
         if info.connected and info.effective_mode == "local":
-            log.verbose("Connected to server and computing locally, updating CRDS cache config and operational context.")
+            log.verbose("Connected to server and computing locally, updating CRDS cache config and latest context.")
             cache_server_info(info, observatory)  # save locally
         else:
             log.verbose("Not connected to CRDS server or operating in 'remote' mode,  skipping cache config update.", verbosity=65)

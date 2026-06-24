@@ -1,3 +1,721 @@
+13.2.5 (2026-06-18)
+===================
+
+No significant changes.
+
+
+13.2.4 (2026-06-10)
+===================
+
+ROMAN
+-----
+
+- Setup new pars reftypes for steps dark decay, multiband catalog, source
+  catalog, WFI18 transient (`#1213
+  <https://github.com/spacetelescope/crds/issues/1213>`_)
+
+
+13.2.3 (2026-05-26)
+===================
+
+ROMAN
+-----
+
+- Update description of the SSC reftypes (`#1206
+  <https://github.com/spacetelescope/crds/issues/1206>`_)
+
+
+13.2.2 (2026-05-22)
+===================
+
+JWST
+----
+
+- Added nirspec_chromcorr.rmap (`#1204
+  <https://github.com/spacetelescope/crds/issues/1204>`_)
+- Added new subbarrays to nirspec_all (`#1205
+  <https://github.com/spacetelescope/crds/issues/1205>`_)
+
+
+13.2.1 (2026-05-13)
+===================
+
+ROMAN
+-----
+
+- Add new Roman reftype WFT ETC (`#1203
+  <https://github.com/spacetelescope/crds/issues/1203>`_)
+
+
+13.2.0 (2026-05-11)
+===================
+
+General
+-------
+
+- Bug fix to the jwst and roman reference file locate facility
+
+  Note: Originating PR#1200 is a feature addition and
+  should have bumped the minor version. Since this PR will
+  actually generate a new minor version, a release note
+  is required though this is just a bug fix. (`#1202
+  <https://github.com/spacetelescope/crds/issues/1202>`_)
+
+
+13.1.16 (2026-04-29)
+====================
+
+No significant changes.
+
+
+13.1.15 (2026-04-27)
+====================
+
+General
+-------
+
+- Pass in header parameters to determine instrument. (`#1200
+  <https://github.com/spacetelescope/crds/issues/1200>`_)
+
+
+13.1.14 (2026-04-16)
+====================
+
+HST
+---
+
+- Added logic to check if serverless (`#1198
+  <https://github.com/spacetelescope/crds/issues/1198>`_)
+
+
+13.1.13 (2026-04-06)
+====================
+
+ROMAN
+-----
+
+- add new roman reftype dustmap (`#1197
+  <https://github.com/spacetelescope/crds/issues/1197>`_)
+
+
+13.1.12 (2026-03-25)
+====================
+
+JWST
+----
+
+- Added SUBARRAY to nircam_photom.spec (`#1194
+  <https://github.com/spacetelescope/crds/issues/1194>`_)
+
+
+13.1.11 (2026-03-19)
+====================
+
+JWST
+----
+
+- Updated selection criteria for nircam_extract1d.rmap (`#1193
+  <https://github.com/spacetelescope/crds/issues/1193>`_)
+
+
+13.1.10 (2026-03-11)
+====================
+
+ROMAN
+-----
+
+- bugfix for ssc yaml header translations (`#1192
+  <https://github.com/spacetelescope/crds/issues/1192>`_)
+
+
+13.1.9 (2026-03-06)
+===================
+
+JWST
+----
+
+- Adjusted error message (`#1190
+  <https://github.com/spacetelescope/crds/issues/1190>`_)
+
+
+13.1.8 (2026-03-05)
+===================
+
+JWST
+----
+
+- Updated descriptions and error log (`#1189
+  <https://github.com/spacetelescope/crds/issues/1189>`_)
+
+
+13.1.7 (2026-03-02)
+===================
+
+ROMAN
+-----
+
+- adds wfi_flat as valid exptype for roman pars tpn (`#1188
+  <https://github.com/spacetelescope/crds/issues/1188>`_)
+
+
+13.1.6 (2026-02-25)
+===================
+
+JWST
+----
+
+- Removed required arrays for miri_rscd (`#1187
+  <https://github.com/spacetelescope/crds/issues/1187>`_)
+
+
+13.1.5 (2026-02-25)
+===================
+
+JWST
+----
+
+- Updated miri_rscd.tpn (`#1186
+  <https://github.com/spacetelescope/crds/issues/1186>`_)
+
+
+13.1.4 (2026-02-19)
+===================
+
+JWST
+----
+
+- Swapped jwst dependencies for stdatamodels (`#1185
+  <https://github.com/spacetelescope/crds/issues/1185>`_)
+
+
+13.1.3 (2026-02-12)
+===================
+
+JWST
+----
+
+- Removed deprecated numpy chararray and replaced with array (`#1184
+  <https://github.com/spacetelescope/crds/issues/1184>`_)
+
+
+13.1.2 (2026-02-10)
+===================
+
+JWST
+----
+
+- added new miri subarrays (`#1173
+  <https://github.com/spacetelescope/crds/issues/1173>`_)
+- removed incorrect miri subarrays (`#1175
+  <https://github.com/spacetelescope/crds/issues/1175>`_)
+- New cubebuildstep rmap for nirspec (`#1178
+  <https://github.com/spacetelescope/crds/issues/1178>`_)
+- Added rmap for nirspec_pars-extract1dstep (`#1183
+  <https://github.com/spacetelescope/crds/issues/1183>`_)
+
+
+13.1.1 (2026-01-16)
+===================
+
+General
+-------
+
+- remove gdps check and improve ssc regex (`#1172
+  <https://github.com/spacetelescope/crds/issues/1172>`_)
+
+
+13.1.0 (2026-01-14)
+===================
+
+ROMAN
+-----
+
+- SSC rmaps and handling GDPS reftypes in certify (`#1167
+  <https://github.com/spacetelescope/crds/issues/1167>`_)
+- new reftypes for roman b21 (`#1171
+  <https://github.com/spacetelescope/crds/issues/1171>`_)
+
+
+13.0.7 (2026-01-09)
+===================
+
+General
+-------
+
+- Fixed looping by year for name creation. (`#1170
+  <https://github.com/spacetelescope/crds/issues/1170>`_)
+
+
+13.0.6 (2025-09-25)
+===================
+
+ROMAN
+-----
+
+- bugfixes for s3 mode (`#1160
+  <https://github.com/spacetelescope/crds/issues/1160>`_)
+
+
+13.0.5 (2025-09-22)
+===================
+
+ROMAN
+-----
+
+- Updated prefixes and simplified cfg setup (`#1159
+  <https://github.com/spacetelescope/crds/issues/1159>`_)
+
+
+version (2025-09-12)
+====================
+
+synphot
+-------
+
+- Add gaia, uvit, and vista based throughputs and handle NONHST instrument
+  specification for synphot (`#1158
+  <https://github.com/spacetelescope/crds/issues/1158>`_)
+
+
+13.0.3 (2025-09-02)
+===================
+
+JWST
+----
+
+- Fixed miri_pars useafter reference (`#1157
+  <https://github.com/spacetelescope/crds/issues/1157>`_)
+
+
+13.0.2 (2025-08-29)
+===================
+
+JWST
+----
+
+- Added subarrays for NIRISS multistrpe readout modes
+  Added rmap for miri_bkg
+  Added rmap for nircam_backgrounds (`#1156
+  <https://github.com/spacetelescope/crds/issues/1156>`_)
+
+
+13.0.1 (2025-08-28)
+===================
+
+General
+-------
+
+- Needed to swap to main in release.yml instead of master. (`#1155
+  <https://github.com/spacetelescope/crds/issues/1155>`_)
+
+
+JWST
+----
+
+- Added handful of 12.1 rmaps. (`#1153
+  <https://github.com/spacetelescope/crds/issues/1153>`_)
+
+
+13.0.0 (2025-08-27)
+===================
+
+General
+-------
+
+- build and test with latest version of Python (`#1109
+  <https://github.com/spacetelescope/crds/issues/1109>`_)
+- Raise import error if aws deps not installed (`#1152
+  <https://github.com/spacetelescope/crds/issues/1152>`_)
+
+
+HST
+---
+
+- Remove list of allowed values for COS tpns (`#1146
+  <https://github.com/spacetelescope/crds/issues/1146>`_)
+
+
+JWST
+----
+
+- catch exceptions for serverless mode and fallback to latest (`#1140
+  <https://github.com/spacetelescope/crds/issues/1140>`_)
+- Add crds_parkey_tool command line tool (`#1145
+  <https://github.com/spacetelescope/crds/issues/1145>`_)
+
+
+ROMAN
+-----
+
+- improved crds_s3_get script for roman pipeline (`#1154
+  <https://github.com/spacetelescope/crds/issues/1154>`_)
+
+
+12.1.10 (2025-06-09)
+====================
+
+JWST
+----
+
+- Commented ERR lines to make array optional for MIRI Dark. (`#1139
+  <https://github.com/spacetelescope/crds/issues/1139>`_)
+
+
+12.1.9 (2025-06-06)
+===================
+
+JWST
+----
+
+- Added READPATT and SUBARRAY to selectors for nirspec_pars-refpixstep.rmap
+  (`#1135 <https://github.com/spacetelescope/crds/issues/1135>`_)
+- Added MIR_WFSS to accepted EXP_TYPE for MIRI (`#1136
+  <https://github.com/spacetelescope/crds/issues/1136>`_)
+
+
+12.1.8 (2025-05-30)
+===================
+
+JWST
+----
+
+- CCD-1602 new pars-pixrefstep.rmap for nircam. (`#1134
+  <https://github.com/spacetelescope/crds/issues/1134>`_)
+
+
+12.1.7 (2025-05-23)
+===================
+
+JWST
+----
+
+- Added base rmap for nircam_bkg (`#1132
+  <https://github.com/spacetelescope/crds/issues/1132>`_)
+
+
+ROMAN
+-----
+
+- adds WFI_LOLO to list of valid Roman EXP_TYPE values (`#1133
+  <https://github.com/spacetelescope/crds/issues/1133>`_)
+
+
+12.1.6 (2025-05-21)
+===================
+
+ROMAN
+-----
+
+- added WFI_SPECTRAL to list of valid exp_types in roman tpn (`#1131
+  <https://github.com/spacetelescope/crds/issues/1131>`_)
+
+
+12.1.5 (2025-04-17)
+===================
+
+HST
+---
+
+- Push back the date for using subarray specific bias reference files for ACS
+  (`#1121 <https://github.com/spacetelescope/crds/issues/1121>`_)
+
+
+ROMAN
+-----
+
+- pass hdu.data as is for checksum funcs (`#1124
+  <https://github.com/spacetelescope/crds/issues/1124>`_)
+- adds new reference mapping matable for roman (`#1128
+  <https://github.com/spacetelescope/crds/issues/1128>`_)
+
+
+12.1.4 (2025-03-06)
+===================
+
+JWST
+----
+
+- Added tpn for niriss_bkg #1122
+
+12.1.3 (2025-03-05)
+===================
+
+JWST
+----
+
+- Updated description values for multiple rmaps #1120
+
+
+12.1.2 (2025-03-03)
+===================
+
+ROMAN
+-----
+
+- Revised skycells rmap for roman (`#1119
+  <https://github.com/spacetelescope/crds/issues/1119>`_)
+
+
+12.1.1 (2025-02-26)
+===================
+
+JWST
+-----
+
+- Added sirskernel reftypes for NIRISS and NIRSPEC, updated
+  nirspec_pars-darkcurrentstep, and created pictureframe reftype (`#1113
+  <https://github.com/spacetelescope/crds/issues/1113>`_)
+
+
+12.1.0 (2025-02-26)
+===================
+
+ROMAN
+-----
+
+- Adds new rmap template for roman skycells reftype (`#1108
+  <https://github.com/spacetelescope/crds/issues/1108>`_)
+
+
+Testing / Automation
+--------------------
+
+- Declare conflicting optional dependencies for uv builds (`#1110
+  <https://github.com/spacetelescope/crds/issues/1110>`_)
+
+
+12.0.9 (2024-12-27)
+===================
+
+JWST
+----
+
+- Added miri_psf.rmap, nircam_convkernel.rmap, and
+  nirspec_pars-badpixselfcalstep.rmap. (`#1099
+  <https://github.com/spacetelescope/crds/issues/1099>`_)
+- Updated EXPTYPE parkey in miri psf and description in Nircam convkernel
+  (`#1100 <https://github.com/spacetelescope/crds/issues/1100>`_)
+- Added reftype for pars-cleanflickernoisestep. (`#1102
+  <https://github.com/spacetelescope/crds/issues/1102>`_)
+
+
+ROMAN
+-----
+
+- added new epsf rmap for roman (`#1104
+  <https://github.com/spacetelescope/crds/issues/1104>`_)
+
+
+12.0.7 (2024-11-26)
+============================================
+
+JWST
+----
+
+- Added miri_psf.rmap, nircam_convkernel.rmap, and nirspec_pars-badpixselfcalstep.rmap. (`#1100
+  <https://github.com/spacetelescope/crds/issues/1100>`_)
+
+12.0.6 (2024-11-19)
+============================================
+
+JWST
+----
+
+- Added SUB8FP6A to nircam_all.tpn. (`#1098
+  <https://github.com/spacetelescope/crds/issues/1098>`_)
+
+
+12.0.5 (2024-11-05)
+===================
+
+ROMAN
+-----
+
+- Adds new reference mapping templates for Aperture Correction (apcorr) and
+  AB-Vega Offset (aboffset) (`#1097
+  <https://github.com/spacetelescope/crds/issues/1097>`_)
+
+
+12.0.4 (2024-10-17)
+===================
+
+General
+-------
+
+- replaces deprecated string literals with raw strings in regex pattern
+  matching (`#1077 <https://github.com/spacetelescope/crds/issues/1077>`_)
+- dev cal versions default to edit context (`#1089
+  <https://github.com/spacetelescope/crds/issues/1089>`_)
+
+
+Testing / Automation
+--------------------
+
+- tests for sync using symbolic context names (`#1091
+  <https://github.com/spacetelescope/crds/issues/1091>`_)
+
+
+12.0.3 (2024-10-11)
+===================
+
+General
+-------
+
+- latest is a valid file state, context spec includes build and latest (`#1088
+  <https://github.com/spacetelescope/crds/issues/1088>`_)
+
+
+12.0.2 (2024-10-07)
+===================
+
+Documentation
+-------------
+
+- Fixed changelog version [#1083]
+
+- Updated image names [#1084]
+
+
+12.0.1 (2024-10-07)
+===================
+
+Documentation
+-------------
+
+- Doc updates for user guide to switch from Operational to Latest (`#1080
+  <https://github.com/spacetelescope/crds/issues/1080>`_)
+
+General
+-------
+
+- client.api.get_default_context falls back to observatory as only argument to
+  maintain compatibility with crds_server < 13.0.0 (`#1078
+  <https://github.com/spacetelescope/crds/issues/1078>`_)
+
+
+12.0.0 (2024-09-25)
+===================
+
+Documentation
+-------------
+
+- use ``towncrier`` to handle change log entries (`#1068
+  <https://github.com/spacetelescope/crds/issues/1068>`_)
+
+
+General
+-------
+
+- Default context changed from "operational" to "latest". For JWST, the default context is the "build" context as determined by locally installed calibration software version. This can be overridden if CRDS_CONTEXT environment variable is explicitly set by user. [#1076]
+
+- Setting environment variable `CRDS_CONTEXT=latest` automatically sets the effective context to the latest operational context found on the CRDS Server. [#1062]
+
+- `client.api.get_default_context` by default returns build context for jwst, else latest. This can still be overridden by explicitly passing a value into optional arg `state`. [#1069]
+
+
+11.18.4 (2024-09-10)
+====================
+
+General
+-------
+
+- Replaced deprecated SafeConfigParser with ConfigParser in crds.core.config [#1065]
+- moved DMS requirement correlations with tests from ``@metrics_logger`` test decorators to ``test/dms_requirement_tests.json`` [#1064]
+
+
+11.18.3 (2024-09-03)
+====================
+
+JWST
+-----
+
+- Added TPN for niriss_pastasoss.rmap. [#1063]
+
+
+11.18.2 (2024-08-31)
+====================
+
+JWST
+-----
+
+- Resolves CCD-1501 by adding a new reference file niriss_pastasoss.rmap. [#1061]
+
+Documentation
+-------------
+
+- Added info on using "--after-context" flag in the crds.sync command line help output. The web user guide (command line tools page) has been updated as well to include this information. [#1060]
+
+
+
+11.18.1 (2024-07-26)
+====================
+
+ROMAN
+-----
+
+- Added reference_to_dataset keypairs for all roman parameter rmaps. Translate useafter to include 'ROMAN' prefix for all reference types (parameter refs included). Added jumpstep test file and new certify test (commented out until crds-cache-test is updated to include this). [#1055]
+
+11.18.0 (2024-07-26)
+====================
+
+ROMAN
+-----
+- Resolves CCD-1482, github issue 1053. Running certify on a Roman reference file now checks the correct set of header keywords depending on whether the file is a parameter reference type (prefix "META") or regular reference type (prefix "ROMAN.META"). [#1054]
+
+
+11.17.26 (2024-07-09)
+=====================
+
+ROMAN
+-----
+
+- Removed all redundant tpn files for roman datamodel-represented references. Certify parameter reference files [#1050]
+
+11.17.25 (2024-06-12)
+=====================
+
+JWST
+----
+
+- Fixed some issues with rmap file parkey selections for NIRISS, NIRCAM and NIRSPEC. [#1046]
+
+
+11.17.23 (2024-06-03)
+=====================
+
+JWST
+----
+- Added RMAPS for miri_pars-spectralleakstep and nirspec_pars-nsleanstep
+- Added GRATING as selection for nirspec_dark.spec and nirspec_pars-nscleanstep.rmap [#1043]
+
+11.17.22 (2024-05-09)
+=====================
+
+HST
+---
+
+- Added RMAP and TPN files for new COS HVDSTAB reference file [#1042]
+- Fix for acs imphttab ref file submission failures [#1044]
+
+JWST
+----
+- Added several RMAPS for pars-resamplestep/specstep [#1038]
+
+
+11.17.21 (2024-04-30)
+=====================
+
+ROMAN
+-----
+
+- Added support for pars- reference files [#1036]
+
+General
+-------
+
+- Use try/except for np.float128 import [#1037]
+
+
 11.17.20 (2024-04-18)
 =====================
 
@@ -16,6 +734,8 @@ TESTING / AUTOMATION
 JWST
 ----
 -Added MODEL to be a PEDIGREE option for JWST. [#1032]
+
+- Formalize the stale-by-context report tool [#1039]
 
 11.17.18 (2024-02-21)
 =====================

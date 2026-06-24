@@ -201,6 +201,7 @@ class ReferenceCertifier(Certifier):
                 "Checking reference modes for", repr(self.filename)):
             if self.mode_columns:
                 self.certify_reference_modes()
+
         with self.error_on_exception(
                 "Dumping provenance for", repr(self.filename)):
             if self._dump_provenance_flag:
@@ -209,10 +210,6 @@ class ReferenceCertifier(Certifier):
         with self.error_on_exception(
                 "Checking ASDF Standard version for", repr(self.filename)):
                 self.check_asdf_standard_version()
-        
-        with self.error_on_exception(
-                "Checking ASDF tag validity for", repr(self.filename)):
-                self.check_asdf_tag()
 
     def load(self):
         """Load and parse header from self.filename."""
@@ -471,7 +468,11 @@ class ReferenceCertifier(Certifier):
                 different += 1
             old_value = handle_nan(old_value)
             new_value = handle_nan(new_value)
-            if np.any(old_value != new_value):
+            try:
+                if np.any(old_value != new_value):
+                    different += 1
+            except ValueError:
+                log.warning(f"Cannot compare arrays in column {old_key} for mode {mode}")
                 different += 1
         return different
 
@@ -492,23 +493,6 @@ class ReferenceCertifier(Certifier):
                     "does not fulfill context requirement of",
                     str(asdf_standard_requirement)
                 )
-
-    def check_asdf_tag(self):
-        """ Check that the tag for an asdf is valid of for a given file.
-        """
-        if self.observatory.lower() == 'roman':
-            from asdf.util import uri_match 
-            with asdf.open(self.filename, _force_raw_types=True) as f:
-                # This commented solution requires adding a new field to the rmap
-                # rmap = self.get_corresponding_rmap()
-                # assert f['roman']._tag == rmap['asdf_tag'] 
-                if not uri_match('asdf://stsci.edu/datamodels/roman/tags/reference_files/*{}-*'.format(f['roman']['meta']['reftype'].lower()), f['roman']._tag):
-                    log.error(
-                        "ASDF Tag Validation",
-                        f['roman']._tag,
-                        "does not match",
-                        'asdf://stsci.edu/datamodels/roman/tags/reference_files/{}-*'.format(f['roman']['meta']['reftype'].lower())
-                    )
 
 # ============================================================================
 
@@ -564,7 +548,12 @@ def table_mode_dictionary(generic_name, tab, mode_keys):
 
 def handle_nan(var):
     """Map nan values to 'nan' so that 'nan' == 'nan'."""
-    if isinstance(var, (np.float32, np.float64, np.float128)) and np.isnan(var):
+    try:
+        from numpy import float128
+        floats = (np.float32, np.float64, np.float128)
+    except ImportError:
+        floats = (np.float32, np.float64)
+    if isinstance(var, floats) and np.isnan(var):
         return 'nan'
     elif isinstance(var, np.ndarray) and var.shape == () and np.any(np.isnan(var)):
         return 'nan'
@@ -698,7 +687,7 @@ class UnknownCertifier(Certifier):
 class AsdfCertifier(ReferenceCertifier):
     """Certifier for ADSF type,  invoke data models checks."""
 
-    _VERSION_RE = re.compile(f"^[0-9]+\.[0-9]+\.[0-9]+$")
+    _VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 
     def certify(self):
         """Certify an unknown format file."""

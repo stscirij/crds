@@ -28,7 +28,7 @@ def _get_crds_ini_parser():
     """Load and return the environment from the CRDS rc file."""
     global CRDS_INI_PARSER
     if CRDS_INI_PARSER is None:
-        parser = configparser.SafeConfigParser()
+        parser = configparser.ConfigParser()
         with log.warn_on_exception("Failed reading CRDS rc file"):
             ini_path = _get_crds_ini_path()
             if os.path.exists(ini_path):
@@ -625,7 +625,7 @@ def check_crds_ref_subdir_mode(mode):
 CRDS_MODE = StrConfigItem("CRDS_MODE", default="auto",
     comment="""Selects where bestrefs are performed, locally, remotely (on the CRDS server),
     or automatically chosen by comparing client version to server version.""",
-    valid_values=["local", "remote", "auto"])
+    valid_values=["local", "remote", "auto", "s3"])
 
 def get_crds_processing_mode():
     """Return the preferred location for computing best references when
@@ -661,7 +661,7 @@ def get_crds_env_context():
     context = os.environ.get("CRDS_CONTEXT", None)
     if context:
         assert is_context_spec(context), \
-            "Only set CRDS_CONTEXT to a literal or symbolic context (.pmap), e.g. jwst_0042.pmap,  jwst-2014-10-15T00:15:21, jwst-operational,  not " + repr(context)
+            "Only set CRDS_CONTEXT to a literal or symbolic context (.pmap), e.g. jwst_0042.pmap,  jwst-2014-10-15T00:15:21, jwst-latest,  not " + repr(context)
     return context
 
 CRDS_IGNORE_MAPPING_CHECKSUM = BooleanConfigItem("CRDS_IGNORE_MAPPING_CHECKSUM", False,
@@ -712,7 +712,7 @@ def get_download_mode():
 
 def get_download_plugin():
     """Fetch a command template from the environment to use a as a substitute for CRDS
-    built-in downloaders.   This can be used to apply "wget" or "curl", etc, to perform
+    built-in downloaders.   This can be used to apply "s3", "wget" or "curl", etc, to perform
     downloads as sub-processes rather than as a direct Python http implementation.
     """
     if "CRDS_DOWNLOAD_MODE" in os.environ and os.environ["CRDS_DOWNLOAD_MODE"].lower() != "plugin":
@@ -954,7 +954,7 @@ def get_path(filename, observatory):
     fullpath = locate_file(filename, observatory)
     return os.path.dirname(fullpath)
 
-def locate_file(filepath, observatory):
+def locate_file(filepath, observatory, parameters=None):
     """Returns CRDS cache path if `filepath` has no directory, otherwise `filepath` as-is.
 
    Cannot always determine CRDS cache location for hypothetical files if not
@@ -966,7 +966,7 @@ def locate_file(filepath, observatory):
     """
     if os.path.dirname(filepath):
         return filepath
-    return relocate_file(filepath, observatory)
+    return relocate_file(filepath, observatory, parameters=parameters)
 
 def pop_crds_uri(filepath):
     """Pop off crds:// from a filepath,  yielding a pathless filename."""
@@ -975,7 +975,7 @@ def pop_crds_uri(filepath):
         assert not os.path.dirname(filepath), "crds:// must prefix a filename with no path."
     return filepath
 
-def relocate_file(filepath, observatory):
+def relocate_file(filepath, observatory, parameters=None):
     """Returns path in CRDS cache where `filepath` would be relocated if it were
     copied into the CRDS cache.
 
@@ -989,7 +989,7 @@ def relocate_file(filepath, observatory):
     if is_mapping(filepath):
         return relocate_mapping(filepath, observatory)
     else:
-        return relocate_reference(filepath, observatory)
+        return relocate_reference(filepath, observatory, parameters=parameters)
 
 # ===========================================================================
 
@@ -1001,7 +1001,7 @@ def locate_reference(ref, observatory):
         return ref
     return relocate_reference(ref, observatory)
 
-def relocate_reference(ref, observatory):
+def relocate_reference(ref, observatory, parameters=None):
     """Returns CRDS cache location where `ref` would be copied if it
     was copied into the CRDS cache.  When `ref` specifies a path to an
     existing file, the contents of `ref` can be exploited to determine
@@ -1016,7 +1016,7 @@ def relocate_reference(ref, observatory):
         return os.path.join(get_crds_refpath(observatory), os.path.basename(ref))
     else:
         from crds.core import utils
-        return utils.get_locator_module(observatory).locate_file(ref)
+        return utils.get_locator_module(observatory).locate_file(ref, parameters=parameters)
 
 # ===========================================================================
 if os.path.exists("/tmp"):
@@ -1121,12 +1121,24 @@ CRDS_SYM_NAME_RE_STR = (r"(" +
         r")?" +
     r")")
 
+
 CRDS_NAME_RE_STR = CRDS_BASE_NAME_RE_STR + r"(_\d\d\d\d)?\."
 CRDS_NAME_RE = re.compile(CRDS_NAME_RE_STR)   # intentionally not complete. no ^ or $
+
 
 # s7g1700gl_dead.fits
 CDBS_NAME_RE_STR = r"[a-z0-9_]{1,52}\.(fits|r\d[hd])"
 CDBS_NAME_RE = re.compile(complete_re(CDBS_NAME_RE_STR))
+
+# SSC Files require more flexibility
+# to allow extra optelem like "prism" or "grism" in name
+# and either standard numeric serial or ctx0001 in the case of optmodel yaml files
+SSC_NAME_RE_STR = r"^(?P<observatory>[a-z]{1,8})\_" + r"(?P<instrument>[a-z]{1,16})\_" + \
+    r"(?P<optelem>[a-z]{1,32})\_" + r"(?P<filekind>[a-z]{1,32})\_" + \
+        r"(?P<serial>[0-9]{4}|ctx[0-9]{4})" + r"\.(?P<suffix>asdf|yaml|fits)$"
+
+GDPS_SSC_NAME_RE = re.compile(complete_re(SSC_NAME_RE_STR))
+
 
 # -------------------------------------------------------------------------------------
 
@@ -1147,6 +1159,10 @@ def is_valid_reference_name(filename):
     """
     name = os.path.basename(filename)
     return is_reference(name) and (is_crds_name(name) or is_cdbs_name(name))
+
+def is_gdps_name(name):
+    name = os.path.basename(name).lower()
+    return bool(GDPS_SSC_NAME_RE.match(name))
 
 def is_crds_name(name):
     """Return True IFF `name` is a valid CRDS-style name.
@@ -1211,7 +1227,7 @@ CONTEXT_RE_STR = (
                 r"(?P<date>" +
                     r"(" + CONTEXT_DATETIME_RE_STR + r")" +
                         r"|" +
-                    r"(" + "edit|operational|versions" + r")" +
+                    r"(" + "edit|operational|latest|build|versions" + r")" +
                 r")" +
             r")" +
         r")" +
@@ -1231,7 +1247,7 @@ PIPELINE_CONTEXT_RE_STR = (
                 r"(" +
                     r"(?P<date>" + CONTEXT_DATETIME_RE_STR + r")" +
                         "|" +
-                    r"(?P<context_tag>" + "edit|operational|versions" + r")" +
+                    r"(?P<context_tag>" + "edit|operational|latest|build|versions" + r")" +
                 r")" +
             r")" +
         r")"
@@ -1348,7 +1364,16 @@ def is_mapping_spec(mapping):
     >>> is_mapping_spec("hst-cos-deadtab-edit")
     True
 
-    >>> is_mapping_spec("jwst-operational")
+    >>> is_mapping_spec("jwst-latest")
+    True
+
+    >>> is_mapping_spec("latest")
+    True
+
+    >>> is_mapping_spec("jwst-build")
+    True
+
+    >>> is_mapping_spec("build")
     True
 
     >>> is_mapping_spec("hst-foo")
@@ -1357,7 +1382,7 @@ def is_mapping_spec(mapping):
     >>> is_mapping_spec("hst_wfc3_0001.imap")
     True
     """
-    return is_mapping(mapping) or (isinstance(mapping, str) and bool(CONTEXT_RE.match(mapping)))
+    return is_mapping(mapping) or (isinstance(mapping, str) and bool(CONTEXT_RE.match(mapping))) or mapping in ["latest", "build"]
 
 def is_context(mapping):
     """Return True IFF `mapping` has an extension indicating a CRDS CONTEXT, i.e. .pmap."""
@@ -1391,6 +1416,8 @@ def is_context_spec(mapping):
     >>> is_context_spec("hst-acs-2040-01-29T12:00:00")
     False
     """
+    if mapping in ["latest", "build"]:
+        return True
     return is_context(mapping) or (isinstance(mapping, str) and bool(PIPELINE_CONTEXT_RE.match(mapping)))
 
 def is_date_based_mapping_spec(mapping):
@@ -1561,6 +1588,8 @@ OBSERVATORY = StrConfigItem("CRDS_OBSERVATORY", None,
     "Configured observatory, required for S3 streaming",
     lower=True
 )
+
+S3_BUCKET = StrConfigItem("CRDS_S3_BUCKET", None, "S3 bucket from which to download CRDS references and mappings.", lower=True)
 
 # -------------------------------------------------------------------------------------
 def get_uri(filename):

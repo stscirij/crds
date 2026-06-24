@@ -1,0 +1,19 @@
+header = {
+    'classes' : ('Match', 'UseAfter'),
+    'derived_from' : 'niriss_wfssbkg.rmap',
+    'file_ext' : '.fits',
+    'filekind' : 'BKG',
+    'filetype' : 'BKG',
+    'instrument' : 'NIRISS',
+    'mapping' : 'REFERENCE',
+    'name' : 'jwst_niriss_bkg.rmap',
+    'observatory' : 'JWST',
+    'parkey' : (('META.EXPOSURE.TYPE', 'META.INSTRUMENT.DETECTOR', 'META.INSTRUMENT.FILTER', 'META.INSTRUMENT.PUPIL'), ('META.OBSERVATION.DATE', 'META.OBSERVATION.TIME')),
+    'sha1sum' : '27efe29787676d381b0e396fc9e9efef35f8411f',
+    'suffix' : 'bkg',
+    'text_descr' : 'Background reference images',
+}
+
+selector = Match({
+    ('NOT NIS_WFSS', 'ANY', 'ANY', 'ANY') : 'N/A',
+})

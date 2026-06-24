@@ -1,0 +1,21 @@
+header = {
+    'classes' : ('Match', 'UseAfter'),
+    'derived_from' : 'Handmade initial rmap',
+    'file_ext' : '.asdf',
+    'filekind' : 'pars-rampfitstep',
+    'filetype' : 'pars-rampfitstep',
+    'instrument' : 'WFI',
+    'mapping' : 'REFERENCE',
+    'name' : 'roman_wfi_pars-rampfitstep.rmap',
+    'observatory' : 'ROMAN',
+    'parkey' : ((), ('ROMAN.META.EXPOSURE.START_TIME',)),
+    'reference_to_dataset' : {
+        'META.EXPOSURE.START_TIME' : 'ROMAN.META.EXPOSURE.START_TIME',
+    },
+    'sha1sum' : '517e9e9a09d86f38710398684afd0105924e15d0',
+    'suffix' : 'pars-rampfitstep',
+    'text_descr' : 'RampFitStep runtime parameters',
+}
+
+selector = Match({
+})

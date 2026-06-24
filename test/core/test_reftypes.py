@@ -113,9 +113,9 @@ def test_reftypes_jwst_reference_name_to_tpn_infos(default_shared_state, jwst_da
      ('DQ_DEF', 'ARRAY_FORMAT', 'EXPRESSION', 'OPTIONAL', expression="(has_column_type(DQ_DEF_ARRAY,'VALUE','INT'))")
      ('DQ_DEF', 'ARRAY_FORMAT', 'EXPRESSION', 'OPTIONAL', expression="(has_columns(DQ_DEF_ARRAY,['BIT','VALUE','NAME','DESCRIPTION']))")
      ('DQ_DEF', 'ARRAY_FORMAT', 'EXPRESSION', 'OPTIONAL', expression='(is_table(DQ_DEF_ARRAY))')
-     ('ERR', 'ARRAY_FORMAT', 'EXPRESSION', 'REQUIRED', expression='(SCI_ARRAY.SHAPE[-2:]==ERR_ARRAY.SHAPE[-2:])')
-     ('ERR', 'ARRAY_FORMAT', 'EXPRESSION', 'REQUIRED', expression="(has_type(ERR_ARRAY,'FLOAT'))")
-     ('ERR', 'ARRAY_FORMAT', 'EXPRESSION', 'REQUIRED', expression='(is_image(ERR_ARRAY))')
+     ('ERR', 'ARRAY_FORMAT', 'EXPRESSION', 'OPTIONAL', expression='(SCI_ARRAY.SHAPE[-2:]==ERR_ARRAY.SHAPE[-2:])')
+     ('ERR', 'ARRAY_FORMAT', 'EXPRESSION', 'OPTIONAL', expression="(has_type(ERR_ARRAY,'FLOAT'))")
+     ('ERR', 'ARRAY_FORMAT', 'EXPRESSION', 'OPTIONAL', expression='(is_image(ERR_ARRAY))')
      ('EXP_TYPE', 'HEADER', 'CHARACTER', 'OPTIONAL', values=())
      ('FULLFRAME_XSIZE', 'EXPRESSION', 'EXPRESSION', 'IF_FULL_FRAME', expression='(META_SUBARRAY_XSIZE==1032)')
      ('FULLFRAME_XSTART', 'EXPRESSION', 'EXPRESSION', 'IF_FULL_FRAME', expression='(META_SUBARRAY_XSTART==1)')
@@ -124,7 +124,7 @@ def test_reftypes_jwst_reference_name_to_tpn_infos(default_shared_state, jwst_da
      ('META.AUTHOR', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
      ('META.DESCRIPTION', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
      ('META.EXPOSURE.READPATT', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('ACQ1', 'ACQ2', 'BRIGHT1', 'BRIGHT2', 'DEEP2', 'DEEP8', 'FAST', 'FASTGRPAVG', 'FASTGRPAVG8', 'FASTGRPAVG16', 'FASTGRPAVG32', 'FASTGRPAVG64', 'FASTR1', 'FASTR100', 'FGS', 'FGS60', 'FGS8370', 'FGS840', 'FGSRAPID', 'FINEGUIDE', 'ID', 'MEDIUM2', 'MEDIUM8', 'NIS', 'NISRAPID', 'NRS', 'NRSIRS2', 'NRSN16R4', 'NRSN32R8', 'NRSN8R2', 'NRSRAPID', 'NRSIRS2RAPID', 'NRSRAPIDD1', 'NRSRAPIDD2', 'NRSRAPIDD6', 'NRSSLOW', 'RAPID', 'SHALLOW2', 'SHALLOW4', 'SLOW', 'SLOWR1', 'TRACK', 'ANY', 'N/A'))
-     ('META.EXPOSURE.TYPE', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('MIR_4QPM', 'MIR_CORONCAL', 'MIR_DARK', 'MIR_DARKALL', 'MIR_DARKIMG', 'MIR_DARKMRS', 'MIR_FLATALL', 'MIR_FLATIMAGE', 'MIR_FLAT-IMAGE', 'MIR_FLATIMAGE-EXT', 'MIR_FLATMRS', 'MIR_FLAT-MRS', 'MIR_FLATMRS-EXT', 'MIR_IMAGE', 'MIR_LRS-FIXEDSLIT', 'MIR_LRS-SLITLESS', 'MIR_LYOT', 'MIR_MRS', 'MIR_TACONFIRM', 'MIR_TACQ', 'ANY', 'N/A'))
+     ('META.EXPOSURE.TYPE', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('MIR_4QPM', 'MIR_CORONCAL', 'MIR_DARK', 'MIR_DARKALL', 'MIR_DARKIMG', 'MIR_DARKMRS', 'MIR_FLATALL', 'MIR_FLATIMAGE', 'MIR_FLAT-IMAGE', 'MIR_FLATIMAGE-EXT', 'MIR_FLATMRS', 'MIR_FLAT-MRS', 'MIR_FLATMRS-EXT', 'MIR_IMAGE', 'MIR_LRS-FIXEDSLIT', 'MIR_LRS-SLITLESS', 'MIR_LYOT', 'MIR_MRS', 'MIR_TACONFIRM', 'MIR_TACQ', 'MIR_WFSS', 'ANY', 'N/A'))
      ('META.HISTORY', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
      ('META.INSTRUMENT.BAND', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('SHORT', 'MEDIUM', 'LONG', 'SHORT-MEDIUM', 'SHORT-LONG', 'MEDIUM-SHORT', 'MEDIUM-LONG', 'LONG-SHORT', 'LONG-MEDIUM', 'MULTIPLE', 'ANY', 'N/A'))
      ('META.INSTRUMENT.CHANNEL', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('1', '2', '3', '4', '12', '34', '1234', '123', '234', 'ANY', 'N/A'))
@@ -139,7 +139,7 @@ def test_reftypes_jwst_reference_name_to_tpn_infos(default_shared_state, jwst_da
      ('META.REFTYPE', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
      ('META.SUBARRAY.FASTAXIS', 'HEADER', 'INTEGER', 'OPTIONAL', values=('1', '-1', '2', '-2'))
      ('META.SUBARRAY.FASTAXIS', 'HEADER', 'INTEGER', 'REQUIRED', values=())
-     ('META.SUBARRAY.NAME', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('BRIGHTSKY', 'MASK1065', 'MASK1140', 'MASK1550', 'MASKLYOT', 'SLITLESSPRISM', 'SUB128', 'SUB256', 'SUB64', 'FULL', 'GENERIC', 'ANY', 'N/A'))
+     ('META.SUBARRAY.NAME', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('BRIGHTSKY', 'MASK1065', 'MASK1140', 'MASK1550', 'MASKLYOT', 'SLITLESSPRISM', 'SLITLESSPRISM_IP', 'SLITLESSPRISM_IPS', 'SUB128', 'SUB128_IP', 'SUB256', 'SUB64', 'SUB64_IP', 'SUBSLIT', 'FULL', 'GENERIC', 'ANY', 'N/A'))
      ('META.SUBARRAY.NAME', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
      ('META.SUBARRAY.SLOWAXIS', 'HEADER', 'INTEGER', 'OPTIONAL', values=('1', '-1', '2', '-2'))
      ('META.SUBARRAY.SLOWAXIS', 'HEADER', 'INTEGER', 'REQUIRED', values=())
@@ -180,7 +180,7 @@ def test_reftypes_roman_reference_name_to_tpn_infos(default_shared_state, roman_
     infos = types.reference_name_to_tpninfos(f"{roman_data}/roman_wfi_flat.asdf")
     expected = """('ROMAN.META.AUTHOR', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
      ('ROMAN.META.DESCRIPTION', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
-     ('ROMAN.META.EXPOSURE.TYPE', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('WFI_IMAGE', 'WFI_GRISM', 'WFI_PRISM', 'WFI_DARK', 'WFI_WSM_ACQ1', 'WFI_WSM_ACQ2', 'WFI_WSM_TRACK', 'WFI_WFSC', 'DEFOCUS_MODERATE', 'DEFOCUS_LARGE', 'WFI_WIM_ACQ', 'WFI_WIM_TRACK', 'WFI_PARALLEL', 'WFI_FLAT_EXTERNAL', 'WFI_FLAT_INTERNAL', 'WFI_RCS'))
+     ('ROMAN.META.EXPOSURE.TYPE', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('WFI_IMAGE', 'WFI_GRISM', 'WFI_PRISM', 'WFI_DARK', 'WFI_WSM_ACQ1', 'WFI_WSM_ACQ2', 'WFI_WSM_TRACK', 'WFI_WFSC', 'DEFOCUS_MODERATE', 'DEFOCUS_LARGE', 'WFI_WIM_ACQ', 'WFI_WIM_TRACK', 'WFI_PARALLEL', 'WFI_FLAT_EXTERNAL', 'WFI_FLAT_INTERNAL', 'WFI_RCS', 'WFI_SPECTRAL', 'WFI_LOLO'))
      ('ROMAN.META.INSTRUMENT.DETECTOR', 'HEADER', 'CHARACTER', 'OPTIONAL', values=('WFI01', 'WFI02', 'WFI03', 'WFI04', 'WFI05', 'WFI06', 'WFI07', 'WFI08', 'WFI09', 'WFI10', 'WFI11', 'WFI12', 'WFI13', 'WFI14', 'WFI15', 'WFI16', 'WFI17', 'WFI18', 'ANY', 'N/A'))
      ('ROMAN.META.INSTRUMENT.DETECTOR', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
      ('ROMAN.META.INSTRUMENT.NAME', 'HEADER', 'CHARACTER', 'REQUIRED', values=())
@@ -212,7 +212,7 @@ def test_reftypes_hst_get_filekinds(default_shared_state):
 def test_reftypes_jwst_get_filekinds(default_shared_state):
     types = reftypes.get_types_object("jwst")
     niriss_types = types.get_filekinds("niriss")
-    expected_types = ['abvegaoffset', 'all', 'amplifier', 'apcorr', 'area', 'dark', 'distortion', 'drizpars', 'extract1d', 'filteroffset', 'flat', 'gain', 'ipc', 'linearity', 'mask', 'nrm', 'pars-chargemigrationstep', 'pars-darkpipeline', 'pars-detector1pipeline', 'pars-image2pipeline', 'pars-jumpstep', 'pars-outlierdetectionstep', 'pars-rampfitstep', 'pars-sourcecatalogstep', 'pars-spec2pipeline', 'pars-tweakregstep', 'pars-undersamplecorrectionstep', 'pars-whitelightstep', 'pathloss', 'persat', 'photom', 'readnoise', 'regions', 'saturation', 'speckernel', 'specprofile', 'spectrace', 'specwcs', 'superbias', 'throughput', 'trapdensity', 'trappars', 'wavelengthrange', 'wavemap', 'wcsregions', 'wfssbkg']
+    expected_types = ['abvegaoffset', 'all', 'amplifier', 'apcorr', 'area', 'bkg', 'dark', 'distortion', 'drizpars', 'extract1d', 'filteroffset', 'flat', 'gain', 'ipc', 'linearity', 'mask', 'nrm', 'pars-backgroundstep', 'pars-chargemigrationstep', 'pars-cleanflickernoisestep', 'pars-darkcurrentstep', 'pars-darkpipeline', 'pars-detector1pipeline', 'pars-image2pipeline', 'pars-jumpstep', 'pars-outlierdetectionstep', 'pars-rampfitstep', 'pars-resamplestep', 'pars-sourcecatalogstep', 'pars-spec2pipeline', 'pars-tweakregstep', 'pars-undersamplecorrectionstep', 'pars-wfsscontamstep', 'pars-whitelightstep', 'pastasoss', 'pathloss', 'persat', 'photom', 'readnoise', 'regions', 'saturation', 'sirskernel', 'speckernel', 'specprofile', 'spectrace', 'specwcs', 'superbias', 'throughput', 'trapdensity', 'trappars', 'wavelengthrange', 'wavemap', 'wcsregions', 'wfssbkg']
     assert sorted(niriss_types) == sorted(expected_types)
 
 
@@ -221,7 +221,9 @@ def test_reftypes_jwst_get_filekinds(default_shared_state):
 @mark.core
 def test_reftypes_roman_get_filekinds(default_shared_state):
     types = reftypes.get_types_object("roman")
-    assert {'all', 'flat'}.issubset(types.get_filekinds("wfi")) is True
+    wfi_filekinds = types.get_filekinds("wfi")
+    expected_types = ['absflux', 'abvegaoffset', 'all', 'apcorr', 'area', 'dark', 'darkdecaysignal', 'detectorstatus', 'distortion', 'dustmap', 'epsf', 'etc', 'flat', 'gain', 'integralnonlinearity', 'inverselinearity', 'ipc', 'linearity', 'mask', 'matable', 'optmodel', 'pars-assignwcsstep', 'pars-darkcurrentstep', 'pars-darkdecaystep', 'pars-dqinitstep', 'pars-exposurepipeline', 'pars-flatfieldstep', 'pars-fluxstep', 'pars-highlevelpipeline', 'pars-jumpstep', 'pars-linearitystep', 'pars-multibandcatalogstep', 'pars-outlierdetectionstep', 'pars-photomstep', 'pars-rampfitstep', 'pars-refpixstep', 'pars-resamplestep', 'pars-saturationstep', 'pars-skymatchstep', 'pars-sourcecatalogstep', 'pars-sourcedetectionstep', 'pars-tweakregstep', 'pars-wfi18transientstep', 'photom', 'readnoise', 'refpix', 'relflux', 'saturation', 'sflat', 'skycells', 'specpsf']
+    assert sorted(wfi_filekinds) == sorted(expected_types)
 
 
 @mark.hst

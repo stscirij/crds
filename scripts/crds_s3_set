@@ -1,0 +1,54 @@
+#!/bin/bash
+#####
+# Sets environment variables required for configuring CRDS to use S3
+# NOTE: Setting CRDS_PATH prior to sourcing this script is recommended: $ export CRDS_PATH=path/to/my/cache
+# Usage: $ source crds_s3_set [observatory] [ops|int|test|dev]
+# Examples:
+# Roman ops (public) bucket: $ source crds_s3_set
+# Roman test bucket: $ source crds_s3_set roman [dev|test|int]
+# HST: $ source crds_s3_set hst [ops (default)|test]
+#####
+# Accepted args with default values
+observatory=${1:-"roman"}
+env_pfx=${2:-"ops"}
+refmode=${3:-"${CRDS_REF_SUBDIR_MODE:=flat}"}
+# Set CRDS_PATH only if not already set
+: "${CRDS_PATH:=/tmp/crds_cache}"
+# Create directory if it doesn't exist
+[ ! -d "$CRDS_PATH" ] && mkdir -p "$CRDS_PATH"
+
+# Set common environment variables
+export CRDS_OBSERVATORY=$observatory
+export CRDS_SERVER_URL="https://${CRDS_OBSERVATORY}-crds-serverless.stsci.edu"
+export CRDS_S3_ENABLED=1
+export CRDS_S3_RETURN_URI=0
+export CRDS_MODE="s3"
+
+# Determine bucket and prefix based on observatory and environment prefix
+if [[ "$CRDS_OBSERVATORY" == "roman" ]]; then
+    bucket="stpubdata"
+    pfx="/roman/crds"
+    if [[ "$env_pfx" != "ops" ]]; then
+        bucket+="-tst"
+        pfx+="/${env_pfx}"
+    fi
+else  # hst
+    pfx=""
+    bucket="hst-crds-cache-${env_pfx}"
+fi
+
+# Export the values
+export CRDS_PATH
+export CRDS_S3_BUCKET="$bucket"
+export CRDS_S3_PREFIX="$pfx"
+export CRDS_MAPPING_URI="s3://${CRDS_S3_BUCKET}${CRDS_S3_PREFIX}/mappings/${CRDS_OBSERVATORY}"
+export CRDS_REFERENCE_URI="s3://${CRDS_S3_BUCKET}${CRDS_S3_PREFIX}/references/${CRDS_OBSERVATORY}"
+export CRDS_CONFIG_URI="s3://${CRDS_S3_BUCKET}${CRDS_S3_PREFIX}/config/${CRDS_OBSERVATORY}"
+export CRDS_DOWNLOAD_MODE=plugin
+export CRDS_DOWNLOAD_PLUGIN="crds_s3_get \${FILENAME} -d \${OUTPUT_PATH} -s \${FILE_SIZE} -c \${FILE_SHA1SUM}"
+
+# OPTIONAL:
+# flat directory structure in local cache (no instrument folder) matches s3 directory structure
+# Override this by setting CRDS_REF_SUBDIR_MODE='instrument'
+export CRDS_REF_SUBDIR_MODE=$refmode
+printenv | grep "^CRDS_*"

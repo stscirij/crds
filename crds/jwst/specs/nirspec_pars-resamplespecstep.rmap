@@ -1,0 +1,17 @@
+header = {
+    'derived_from' : 'nirspec-pars-jumpstep.rmap',
+    'file_ext' : '.asdf',
+    'filekind' : 'pars-resamplespecstep',
+    'filetype' : 'pars-resamplespecstep',
+    'instrument' : 'NIRSPEC',
+    'mapping' : 'REFERENCE',
+    'name' : 'jwst_nirspec_pars-resamplespecstep.rmap',
+    'observatory' : 'JWST',
+    'parkey' : ((), ('META.OBSERVATION.DATE', 'META.OBSERVATION.TIME')),
+    'sha1sum' : 'e69b81b8fdb00e61725b4be8405059d21af1fb2d',
+    'suffix' : 'pars-resamplespecstep',
+    'text_descr' : 'ResampleSpecStep runtime parameters',
+}
+
+selector = Match({
+})

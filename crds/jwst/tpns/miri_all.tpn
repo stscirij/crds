@@ -15,7 +15,7 @@ META.EXPOSURE.TYPE          H   C   O   MIR_4QPM,MIR_CORONCAL,MIR_DARK,MIR_DARKA
                                         MIR_FLATALL,MIR_FLATIMAGE,MIR_FLAT-IMAGE,MIR_FLATIMAGE-EXT,\
                                         MIR_FLATMRS,MIR_FLAT-MRS,MIR_FLATMRS-EXT,\
                                         MIR_IMAGE,MIR_LRS-FIXEDSLIT,MIR_LRS-SLITLESS,MIR_LYOT,MIR_MRS,\
-                                        MIR_TACONFIRM,MIR_TACQ,ANY,N/A
+                                        MIR_TACONFIRM,MIR_TACQ,MIR_WFSS,ANY,N/A
 
 META.INSTRUMENT.CHANNEL     H   C   O   1,2,3,4,12,34,1234,123,234,ANY,N/A
 
@@ -32,7 +32,7 @@ META.SUBARRAY.SLOWAXIS      H   I   O  1,-1,2,-2
 # META.EXPOSURE.READPATT      H   C   O   SLOW,FAST,FASTGRPAVG,ANY,N/A
 
 META.SUBARRAY.NAME          H   C   O   BRIGHTSKY,MASK1065,MASK1140,MASK1550,MASKLYOT,\
-                                        SLITLESSPRISM,SUB128,SUB256,SUB64,\
-                                        FULL,GENERIC,ANY,N/A
+                                        SLITLESSPRISM,SLITLESSPRISM_IP,SLITLESSPRISM_IPS,SUB128,SUB128_IP,\
+                                        SUB256,SUB64,SUB64_IP,SUBSLIT,FULL,GENERIC,ANY,N/A
 
 # META.INSTRUMENT.FILTER      H   C   O

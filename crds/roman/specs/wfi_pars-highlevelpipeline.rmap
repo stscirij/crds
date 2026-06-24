@@ -1,0 +1,27 @@
+header = {
+    'classes' : ('Match', 'UseAfter'),
+    'derived_from' : 'Hand-made, SCSB, 2024-04',
+    'file_ext' : '.asdf',
+    'filekind' : 'PARS-HIGHLEVELPIPELINE',
+    'filetype' : 'PARS-HIGHLEVELPIPELINE',
+    'instrument' : 'WFI',
+    'mapping' : 'REFERENCE',
+    'name' : 'roman_wfi_pars-highlevelpipeline.rmap',
+    'observatory' : 'ROMAN',
+    'parkey' : (('ROMAN.META.EXPOSURE.TYPE',), ('ROMAN.META.EXPOSURE.START_TIME',)),
+    'reference_to_dataset' : {
+        'META.EXPOSURE.START_TIME' : 'ROMAN.META.EXPOSURE.START_TIME',
+        'META.EXPOSURE.TYPE' : 'ROMAN.META.EXPOSURE.TYPE',
+    },
+    'sha1sum' : '3658f4741e2ca45ae61dc938f096d015477f821b',
+    'suffix' : 'pars-highlevelpipeline',
+    'text_descr' : 'Step parameters for HighLevelPipeline',
+}
+
+comment = """
+Step parameter references are ROMAN step and pipeline configurations.
+This reftype provides the configuration for romancal.pipeline.HighLevelPipeline
+"""
+
+selector = Match({
+})

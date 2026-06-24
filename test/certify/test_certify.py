@@ -2,7 +2,6 @@ import asdf
 from pytest import mark, xfail
 import numpy as np
 import logging
-from metrics_logger.decorators import metrics_logger
 from crds.core import utils, log, exceptions
 from crds import data_file, certify
 from crds.certify import CertifyScript, generic_tpn, validators, mapping_parser
@@ -496,31 +495,34 @@ def test_certify_table_comparison_context(default_shared_state, caplog):
     Mode columns defined by spec for new reference 'y951738kl_hv.fits[1]' are: ['DATE']
     All column names for this table new reference 'y951738kl_hv.fits[1]' are: ['DATE', 'HVLEVELA']
     Checking for duplicate modes using intersection ['DATE']
-    Table mode (('DATE', 56923.5834),) from old reference 'yas2005el_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
-    Table mode (('DATE', 56923.625),) from old reference 'yas2005el_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
-    Table mode (('DATE', 56964.0),) from old reference 'yas2005el_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
+    Table mode (('DATE', np.float64(56923.5834)),) from old reference 'yas2005el_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
+    Table mode (('DATE', np.float64(56923.625)),) from old reference 'yas2005el_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
+    Table mode (('DATE', np.float64(56964.0)),) from old reference 'yas2005el_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
     Mode columns defined by spec for old reference 'yas2005el_hv.fits[2]' are: ['DATE']
     All column names for this table old reference 'yas2005el_hv.fits[2]' are: ['DATE', 'HVLEVELB']
     Checking for duplicate modes using intersection ['DATE']
     Mode columns defined by spec for new reference 'y951738kl_hv.fits[2]' are: ['DATE']
     All column names for this table new reference 'y951738kl_hv.fits[2]' are: ['DATE', 'HVLEVELB']
     Checking for duplicate modes using intersection ['DATE']
-    Table mode (('DATE', 56921.8334),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56922.0),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56923.5834),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56923.625),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56924.0417),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56924.2084),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56924.3125),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56925.0),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56959.4584),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56959.6667),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56961.8334),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56962.8334),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56921.8334)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56922.0)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56923.5834)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56923.625)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56924.0417)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56924.2084)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56924.3125)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56925.0)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56959.4584)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56959.6667)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56961.8334)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56962.8334)),) from old reference 'yas2005el_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
     0 errors
     15 warnings"""
     for msg in expected_out.splitlines():
+
         assert msg.strip() in out
+
+
 
 
 @mark.hst
@@ -546,26 +548,26 @@ def test_certify_table_comparison_reference(default_shared_state, hst_data, capl
     Mode columns defined by spec for new reference 'y951738kl_hv.fits[1]' are: ['DATE']
     All column names for this table new reference 'y951738kl_hv.fits[1]' are: ['DATE', 'HVLEVELA']
     Checking for duplicate modes using intersection ['DATE']
-    Table mode (('DATE', 56923.5834),) from old reference 'y9j16159l_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
-    Table mode (('DATE', 56923.625),) from old reference 'y9j16159l_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
+    Table mode (('DATE', np.float64(56923.5834)),) from old reference 'y9j16159l_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
+    Table mode (('DATE', np.float64(56923.625)),) from old reference 'y9j16159l_hv.fits[1]' is NOT IN new reference 'y951738kl_hv.fits[1]'
     Mode columns defined by spec for old reference 'y9j16159l_hv.fits[2]' are: ['DATE']
     All column names for this table old reference 'y9j16159l_hv.fits[2]' are: ['DATE', 'HVLEVELB']
     Checking for duplicate modes using intersection ['DATE']
-    Duplicate definitions in old reference 'y9j16159l_hv.fits[2]' for mode: (('DATE', 56924.0417),) :
-    (129, (('DATE', 56924.0417), ('HVLEVELB', 169)))
-    (131, (('DATE', 56924.0417), ('HVLEVELB', 169)))
-    Duplicate definitions in old reference 'y9j16159l_hv.fits[2]' for mode: (('DATE', 56925.0),) :
-    (132, (('DATE', 56925.0), ('HVLEVELB', 175)))
-    (134, (('DATE', 56925.0), ('HVLEVELB', 175)))
+    Duplicate definitions in old reference 'y9j16159l_hv.fits[2]' for mode: (('DATE', np.float64(56924.0417)),) :
+    (129, (('DATE', np.float64(56924.0417)), ('HVLEVELB', np.int16(169))))
+    (131, (('DATE', np.float64(56924.0417)), ('HVLEVELB', np.int16(169))))
+    Duplicate definitions in old reference 'y9j16159l_hv.fits[2]' for mode: (('DATE', np.float64(56925.0)),) :
+    (132, (('DATE', np.float64(56925.0)), ('HVLEVELB', np.int16(175))))
+    (134, (('DATE', np.float64(56925.0)), ('HVLEVELB', np.int16(175))))
     Mode columns defined by spec for new reference 'y951738kl_hv.fits[2]' are: ['DATE']
     All column names for this table new reference 'y951738kl_hv.fits[2]' are: ['DATE', 'HVLEVELB']
     Checking for duplicate modes using intersection ['DATE']
-    Table mode (('DATE', 56921.8334),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56922.0),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56923.625),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56924.0417),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56924.3125),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
-    Table mode (('DATE', 56925.0),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56921.8334)),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56922.0)),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56923.625)),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56924.0417)),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56924.3125)),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
+    Table mode (('DATE', np.float64(56925.0)),) from old reference 'y9j16159l_hv.fits[2]' is NOT IN new reference 'y951738kl_hv.fits[2]'
     0 errors
     10 warnings"""
     for msg in expected_out.splitlines():
@@ -766,7 +768,6 @@ Checking JWST datamodels."""
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS4")
 def test_certify_roman_valid_asdf(roman_test_cache_state, roman_data, caplog):
     """Required Roman test: confirm that a valid asdf file is recognized as such.
     """
@@ -779,7 +780,6 @@ def test_certify_roman_valid_asdf(roman_test_cache_state, roman_data, caplog):
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS4")
 def test_certify_roman_invalid_asdf_schema(roman_test_cache_state, roman_data, caplog):
     """Required Roman test: confirm that an asdf file that does not conform to its schema definition
     triggers an error in DataModels.
@@ -789,12 +789,11 @@ def test_certify_roman_invalid_asdf_schema(roman_test_cache_state, roman_data, c
         certify.certify_file(fpath, "roman_0003.pmap", observatory="roman")
         out = caplog.text
         assert "Validation error" in out
-        assert "This ain't no valid time" in out
+        assert "yesterday" in out
 
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS4")
 def test_certify_roman_invalid_asdf_tpn(roman_test_cache_state, roman_data, caplog):
     """Required Roman test: confirm that an asdf file that does not conform to its tpn definition
     triggers an error in crds. Note: as the tpn often replicates schema implementation, this also
@@ -803,29 +802,13 @@ def test_certify_roman_invalid_asdf_tpn(roman_test_cache_state, roman_data, capl
     with caplog.at_level(logging.INFO, logger="CRDS"):
         certify.certify_file(f"{roman_data}/roman_wfi16_f158_flat_invalid_tpn.asdf", "roman_0003.pmap", observatory="roman")
         out = caplog.text
-    expected_out = f"""Certifying '{roman_data}/roman_wfi16_f158_flat_invalid_tpn.asdf' as 'ASDF' relative to context 'roman_0003.pmap'
-In 'roman_wfi16_f158_flat_invalid_tpn.asdf' : Checking 'ROMAN.META.INSTRUMENT.OPTICAL_ELEMENT [FITS unknown]' : Value 'BAD' is not one of ['ANY',
-'CLEAR',
-'DARK',
-'F062',
-'F087',
-'F106',
-'F129',
-'F146',
-'F158',
-'F184',
-'F213',
-'GRISM',
-'N/A',
-'PRISM',
-'UNKNOWN']"""
+    expected_out = """Validation error : 'BAD' is not one of ['F062', 'F087', 'F106', 'F129', 'F146', 'F158', 'F184', 'F213', 'GRISM', 'PRISM', 'DARK']"""
     for msg in expected_out.splitlines():
         assert msg.strip() in out
 
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS5")
 def test_certify_roman_valid_spec_asdf(roman_test_cache_state, roman_data, caplog):
     """Required Roman test: confirm that a valid spectroscopic asdf file is recognized as such."""
     with caplog.at_level(logging.INFO, logger="CRDS"):
@@ -837,7 +820,6 @@ def test_certify_roman_valid_spec_asdf(roman_test_cache_state, roman_data, caplo
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS5")
 def test_certify_roman_invalid_spec_asdf_schema(roman_test_cache_state, roman_data, caplog):
     """Required Roman test: confirm that a spectroscopic asdf file that does not conform to its schema
     definition triggers an error in DataModels."""
@@ -851,7 +833,6 @@ def test_certify_roman_invalid_spec_asdf_schema(roman_test_cache_state, roman_da
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS5")
 def test_certify_roman_invalid_spec_asdf_tpn(roman_test_cache_state, roman_data, caplog):
     """Required Roman test: confirm that a spectroscopic asdf file that does not conform to its tpn
     definition triggers an error in crds. Note: as the tpn often replicates schema implementation,
@@ -860,10 +841,7 @@ def test_certify_roman_invalid_spec_asdf_tpn(roman_test_cache_state, roman_data,
     with caplog.at_level(logging.INFO, logger="CRDS"):
         certify.certify_file(f"{roman_data}/roman_wfi16_grism_flat_invalid_tpn.asdf", "roman_0003.pmap", observatory="roman")
         out = caplog.text
-        expected_out = f"""Certifying '{roman_data}/roman_wfi16_grism_flat_invalid_tpn.asdf' as 'ASDF' relative to context 'roman_0003.pmap'
-In 'roman_wfi16_grism_flat_invalid_tpn.asdf' : Error mapping reference names and values to dataset names and values : Bad USEAFTER time format = 'yesterday'
-In 'roman_wfi16_grism_flat_invalid_tpn.asdf' : Checking 'ROMAN.META.USEAFTER [USEAFTER]' : Invalid 'Jwstdate' format 'yesterday' should be '2018-12-22T00:00:00'
-In 'roman_wfi16_grism_flat_invalid_tpn.asdf' : Checking ASDF tag validity for '{roman_data}/roman_wfi16_grism_flat_invalid_tpn.asdf' : 'dict' object has no attribute '_tag'"""
+        expected_out = """'BAD' is not one of ['F062', 'F087', 'F106', 'F129', 'F146', 'F158', 'F184', 'F213', 'GRISM', 'PRISM', 'DARK']"""
     for msg in expected_out.splitlines():
         assert msg.strip() in out
 
@@ -924,7 +902,6 @@ def test_certify_rmap_compare(jwst_serverless_state, caplog):
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS6")
 def test_certify_roman_rmap_compare(roman_test_cache_state, caplog):
     """Required Roman test: confirm that a calibration mapping file properly compares to its context."""
     with caplog.at_level(logging.INFO, logger="CRDS"):
@@ -957,7 +934,7 @@ def test_certify_jwst_bad_fits(jwst_serverless_state, jwst_data, caplog):
     Checking for duplicate modes using intersection ['FILTER', 'PUPIL']
     No comparison reference for 'niriss_ref_photom_bad.fits' in context 'jwst_0541.pmap'. Skipping tables comparison.
     Checking JWST datamodels.
-    ValidationWarning : stdatamodels.validate : While validating meta.instrument.detector the following error occurred:'FOO' is not one of ['NRCA1', 'NRCA2', 'NRCA3', 'NRCA4', 'NRCALONG', 'NRCB1', 'NRCB2', 'NRCB3', 'NRCB4', 'NRCBLONG', 'NRS1', 'NRS2', 'ANY', 'MIRIMAGE', 'MIRIFULONG', 'MIRIFUSHORT', 'NIS', 'GUIDER1', 'GUIDER2', 'MULTIPLE', 'N/A']Failed validating 'enum' in schema:    OrderedDict([('title', 'Name of detector used to acquire the data'),                 ('type', 'string'),                 ('enum',                  ['NRCA1',                   'NRCA2',                   'NRCA3',                   'NRCA4',                   'NRCALONG',                   'NRCB1',                   'NRCB2',                   'NRCB3',                   'NRCB4',                   'NRCBLONG',                   'NRS1',                   'NRS2',                   'ANY',                   'MIRIMAGE',                   'MIRIFULONG',                   'MIRIFUSHORT',                   'NIS',                   'GUIDER1',                   'GUIDER2',                   'MULTIPLE',                   'N/A']),                 ('description', 'Detector name.'),                 ('fits_keyword', 'DETECTOR')])On instance:    'FOO'
+    ValidationWarning : stdatamodels.fits_support : While validating meta.instrument.detector the following error occurred:'FOO' is not one of ['NRCA1', 'NRCA2', 'NRCA3', 'NRCA4', 'NRCALONG', 'NRCB1', 'NRCB2', 'NRCB3', 'NRCB4', 'NRCBLONG', 'NRS1', 'NRS2', 'ANY', 'MIRIMAGE', 'MIRIFULONG', 'MIRIFUSHORT', 'NIS', 'GUIDER1', 'GUIDER2', 'MULTIPLE', 'N/A']Failed validating 'enum' in schema:    {'description': 'Detector name.',     'enum': ['NRCA1',              'NRCA2',              'NRCA3',              'NRCA4',              'NRCALONG',              'NRCB1',              'NRCB2',              'NRCB3',              'NRCB4',              'NRCBLONG',              'NRS1',              'NRS2',              'ANY',              'MIRIMAGE',              'MIRIFULONG',              'MIRIFUSHORT',              'NIS',              'GUIDER1',              'GUIDER2',              'MULTIPLE',              'N/A'],     'fits_keyword': 'DETECTOR',     'title': 'Name of detector used to acquire the data',     'type': 'string'}On instance:    'FOO'
 """
     for msg in expected_out.splitlines():
         assert msg.strip() in out
@@ -979,7 +956,6 @@ Checksum error : sha1sum mismatch in 'hst_cos_tdstab_duplicate.rmap'"""
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS6")
 def test_certify_roman_duplicate_rmap_case_error(roman_test_cache_state, roman_data, caplog):
     """Required Roman test: verify that a calibration mapping file containing duplicate match cases 
     fails."""
@@ -1012,7 +988,6 @@ Duplicate entry at selector ('FUV', 'SPECTROSCOPIC') = UseAfter vs. UseAfter"""
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS6")
 def test_checksum_roman_duplicate_rmap_case_error(roman_serverless_state, roman_data, caplog):
     """Required Roman test: verify that the crds rmap checksum update tool does not silently drop
     duplicate rmap entries when updating the checksum and rewriting the file."""
@@ -1028,7 +1003,6 @@ Duplicate entry at selector ('WFI01', 'F158') = UseAfter vs. UseAfter"""
 
 @mark.roman
 @mark.certify
-@metrics_logger("DMS6")
 def test_certify_roman_invalid_rmap_tpn(roman_test_cache_state, roman_data, caplog):
     """Required Roman test: verify that a calibration mapping file that violates tpn rules produces an
     error."""
@@ -1306,9 +1280,9 @@ def test_acs_idctab_char_plus_column(default_shared_state, hst_data, caplog):
     Mode columns defined by spec for old reference 'p7d1548qj_idc.fits[1]' are: ['DETCHIP', 'WAVELENGTH', 'DIRECTION', 'FILTER1', 'FILTER2', 'V2REF', 'V3REF']
     All column names for this table old reference 'p7d1548qj_idc.fits[1]' are: ['DETCHIP', 'DIRECTION', 'FILTER1', 'FILTER2', 'XSIZE', 'YSIZE', 'XREF', 'YREF', 'V2REF', 'V3REF', 'SCALE', 'CX10', 'CX11', 'CX20', 'CX21', 'CX22', 'CX30', 'CX31', 'CX32', 'CX33', 'CX40', 'CX41', 'CX42', 'CX43', 'CX44', 'CY10', 'CY11', 'CY20', 'CY21', 'CY22', 'CY30', 'CY31', 'CY32', 'CY33', 'CY40', 'CY41', 'CY42', 'CY43', 'CY44']
     Checking for duplicate modes using intersection ['DETCHIP', 'DIRECTION', 'FILTER1', 'FILTER2', 'V2REF', 'V3REF']
-    Duplicate definitions in old reference 'p7d1548qj_idc.fits[1]' for mode: (('DETCHIP', 1), ('DIRECTION', 'FORWARD'), ('FILTER1', 'F550M'), ('FILTER2', 'F220W'), ('V2REF', 207.082), ('V3REF', 471.476)) :
-    (29, (('DETCHIP', 1), ('DIRECTION', 'FORWARD'), ('FILTER1', 'F550M'), ('FILTER2', 'F220W'), ('XSIZE', 1024), ('YSIZE', 1024), ('XREF', 512.0), ('YREF', 512.0), ('V2REF', 207.082), ('V3REF', 471.476), ('SCALE', 0.025), ('CX10', -9.479088e-08), ('CX11', 0.028289594), ('CX20', -1.9904244e-08), ('CX21', 2.5261727e-07), ('CX22', -9.322343e-08), ('CX30', -2.4618475e-13), ('CX31', 1.0903676e-11), ('CX32', 5.9885034e-13), ('CX33', 3.2860548e-12), ('CX40', 1.1240284e-15), ('CX41', 3.591716e-15), ('CX42', -4.085765e-14), ('CX43', -5.2304664e-14), ('CX44', 6.967954e-15), ('CY10', 0.02483979), ('CY11', 0.0028646854), ('CY20', 2.8243642e-07), ('CY21', -4.0260268e-08), ('CY22', 3.9303682e-08), ('CY30', 1.2405402e-11), ('CY31', -1.6079407e-11), ('CY32', 8.246831e-12), ('CY33', 1.1388372e-11), ('CY40', -2.7262569e-14), ('CY41', -1.3812129e-14), ('CY42', 2.0695324e-14), ('CY43', -4.071885e-14), ('CY44', 1.0464957e-14)))
-    (35, (('DETCHIP', 1), ('DIRECTION', 'FORWARD'), ('FILTER1', 'F550M'), ('FILTER2', 'F220W'), ('XSIZE', 1024), ('YSIZE', 1024), ('XREF', 512.0), ('YREF', 512.0), ('V2REF', 207.082), ('V3REF', 471.476), ('SCALE', 0.025), ('CX10', -9.479088e-08), ('CX11', 0.028289594), ('CX20', -1.9904244e-08), ('CX21', 2.5261727e-07), ('CX22', -9.322343e-08), ('CX30', -2.4618475e-13), ('CX31', 1.0903676e-11), ('CX32', 5.9885034e-13), ('CX33', 3.2860548e-12), ('CX40', 1.1240284e-15), ('CX41', 3.591716e-15), ('CX42', -4.085765e-14), ('CX43', -5.2304664e-14), ('CX44', 6.967954e-15), ('CY10', 0.02483979), ('CY11', 0.0028646854), ('CY20', 2.8243642e-07), ('CY21', -4.0260268e-08), ('CY22', 3.9303682e-08), ('CY30', 1.2405402e-11), ('CY31', -1.6079407e-11), ('CY32', 8.246831e-12), ('CY33', 1.1388372e-11), ('CY40', -2.7262569e-14), ('CY41', -1.3812129e-14), ('CY42', 2.0695324e-14), ('CY43', -4.071885e-14), ('CY44', 1.0464957e-14)))
+    Duplicate definitions in old reference 'p7d1548qj_idc.fits[1]' for mode: (('DETCHIP', np.int16(1)), ('DIRECTION', 'FORWARD'), ('FILTER1', 'F550M'), ('FILTER2', 'F220W'), ('V2REF', np.float32(207.082)), ('V3REF', np.float32(471.476))) :
+    (29, (('DETCHIP', np.int16(1)), ('DIRECTION', 'FORWARD'), ('FILTER1', 'F550M'), ('FILTER2', 'F220W'), ('XSIZE', np.int32(1024)), ('YSIZE', np.int32(1024)), ('XREF', np.float32(512.0)), ('YREF', np.float32(512.0)), ('V2REF', np.float32(207.082)), ('V3REF', np.float32(471.476)), ('SCALE', np.float32(0.025)), ('CX10', np.float32(-9.479088e-08)), ('CX11', np.float32(0.028289594)), ('CX20', np.float32(-1.9904244e-08)), ('CX21', np.float32(2.5261727e-07)), ('CX22', np.float32(-9.322343e-08)), ('CX30', np.float32(-2.4618475e-13)), ('CX31', np.float32(1.0903676e-11)), ('CX32', np.float32(5.9885034e-13)), ('CX33', np.float32(3.2860548e-12)), ('CX40', np.float32(1.1240284e-15)), ('CX41', np.float32(3.591716e-15)), ('CX42', np.float32(-4.085765e-14)), ('CX43', np.float32(-5.2304664e-14)), ('CX44', np.float32(6.967954e-15)), ('CY10', np.float32(0.02483979)), ('CY11', np.float32(0.0028646854)), ('CY20', np.float32(2.8243642e-07)), ('CY21', np.float32(-4.0260268e-08)), ('CY22', np.float32(3.9303682e-08)), ('CY30', np.float32(1.2405402e-11)), ('CY31', np.float32(-1.6079407e-11)), ('CY32', np.float32(8.246831e-12)), ('CY33', np.float32(1.1388372e-11)), ('CY40', np.float32(-2.7262569e-14)), ('CY41', np.float32(-1.3812129e-14)), ('CY42', np.float32(2.0695324e-14)), ('CY43', np.float32(-4.071885e-14)), ('CY44', np.float32(1.0464957e-14))))
+    (35, (('DETCHIP', np.int16(1)), ('DIRECTION', 'FORWARD'), ('FILTER1', 'F550M'), ('FILTER2', 'F220W'), ('XSIZE', np.int32(1024)), ('YSIZE', np.int32(1024)), ('XREF', np.float32(512.0)), ('YREF', np.float32(512.0)), ('V2REF', np.float32(207.082)), ('V3REF', np.float32(471.476)), ('SCALE', np.float32(0.025)), ('CX10', np.float32(-9.479088e-08)), ('CX11', np.float32(0.028289594)), ('CX20', np.float32(-1.9904244e-08)), ('CX21', np.float32(2.5261727e-07)), ('CX22', np.float32(-9.322343e-08)), ('CX30', np.float32(-2.4618475e-13)), ('CX31', np.float32(1.0903676e-11)), ('CX32', np.float32(5.9885034e-13)), ('CX33', np.float32(3.2860548e-12)), ('CX40', np.float32(1.1240284e-15)), ('CX41', np.float32(3.591716e-15)), ('CX42', np.float32(-4.085765e-14)), ('CX43', np.float32(-5.2304664e-14)), ('CX44', np.float32(6.967954e-15)), ('CY10', np.float32(0.02483979)), ('CY11', np.float32(0.0028646854)), ('CY20', np.float32(2.8243642e-07)), ('CY21', np.float32(-4.0260268e-08)), ('CY22', np.float32(3.9303682e-08)), ('CY30', np.float32(1.2405402e-11)), ('CY31', np.float32(-1.6079407e-11)), ('CY32', np.float32(8.246831e-12)), ('CY33', np.float32(1.1388372e-11)), ('CY40', np.float32(-2.7262569e-14)), ('CY41', np.float32(-1.3812129e-14)), ('CY42', np.float32(2.0695324e-14)), ('CY43', np.float32(-4.071885e-14)), ('CY44', np.float32(1.0464957e-14))))
     Mode columns defined by spec for new reference 'acs_new_idc.fits[1]' are: ['DETCHIP', 'WAVELENGTH', 'DIRECTION', 'FILTER1', 'FILTER2', 'V2REF', 'V3REF']
     All column names for this table new reference 'acs_new_idc.fits[1]' are: ['DETCHIP', 'DIRECTION', 'FILTER1', 'FILTER2']
     Checking for duplicate modes using intersection ['DETCHIP', 'DIRECTION', 'FILTER1', 'FILTER2']
@@ -1584,11 +1558,9 @@ tag:stsci.edu:asdf/core/asdf-1.0.0 is not recognized, converting to raw Python d
 File written with dev version of asdf library: 2.0.0.dev1213
 ########################################
 0 errors
-4 warnings
+7 warnings
 5 infos"""
     for msg in expected_out.splitlines():
-        if msg.strip() not in out:
-            breakpoint()
         assert msg.strip() in out
 
 
@@ -2993,3 +2965,51 @@ Checking JWST datamodels.
 1 errors""".splitlines()
     for line in expected:
         assert line in out
+
+
+@mark.roman
+@mark.certify
+def test_certify_pars(roman_test_cache_state, roman_data, caplog):
+    """Test that parameter references certify positive.
+    """
+    with caplog.at_level(logging.INFO, logger="CRDS"):
+        certify.certify_file(f"{roman_data}/roman_wfi_pars-exposurepipeline.asdf", "roman_0006.pmap", observatory="roman")
+        out = caplog.text
+    assert len(out.splitlines()) <= 2 
+
+
+@mark.roman
+@mark.certify
+def test_certify_pars_badtype(roman_test_cache_state, roman_data, caplog):
+    """Test parameter references check reftype.
+    """
+    with caplog.at_level(logging.INFO, logger="CRDS"):
+        certify.certify_file(f"{roman_data}/roman_wfi_pars-exposurepipeline_badtype.asdf", "roman_0006.pmap", observatory="roman")
+        out = caplog.text
+    expected = """Can't identify ROMAN.META.REFTYPE""".splitlines()
+    for line in expected:
+        assert line in out
+
+
+@mark.roman
+@mark.certify
+def test_certify_pars_badschema(roman_test_cache_state, roman_data, caplog):
+    """Test parameter references check general schema validation failures.
+    """
+    with caplog.at_level(logging.INFO, logger="CRDS"):
+        certify.certify_file(f"{roman_data}/roman_wfi_pars-exposurepipeline_invalid_schema.asdf", "roman_0006.pmap", observatory="roman")
+        out = caplog.text
+    expected = """Invalid instrument 'bad'""".splitlines()
+    for line in expected:
+        assert line in out
+
+# Uncomment once crds-cache-test repo has been updated
+# @mark.roman
+# @mark.certify
+# def test_certify_roman_pars_jumpstep(roman_test_cache_state, roman_data):
+#     """Test certify for jumpstep parameter reference file.
+#     TODO: once it becomes possible to do so, this file should be created on the fly using 
+#     roman_datamodels.maker_utils in order to test validation against the most current schema.
+#     The function for doing so should be added to test/data/roman/mkdata.py
+#     """
+#     certify.certify_file(f"{roman_data}/roman_wfi_pars-jumpstep_0001.asdf", "roman_0006.pmap", observatory="roman")

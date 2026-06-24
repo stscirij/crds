@@ -11,10 +11,11 @@ import re
 import warnings
 
 from asdf.tags.core import NDArrayType
-from stdatamodels.validate import ValidationWarning
+from stdatamodels.exceptions import ValidationWarning
 
 # =======================================================================
 
+from crds import api
 from crds.core import rmap, config, utils, timestamp, log, exceptions
 from crds.certify import generic_tpn
 from crds import data_file
@@ -24,6 +25,7 @@ from crds.io import abstract
 
 # These two functions decouple the generic reference file certifier program
 # from observatory-unique ways of specifying and caching Validator parameters.
+
 
 from crds.jwst import TYPES, INSTRUMENTS, FILEKINDS, EXTENSIONS, INSTRUMENT_FIXERS, TYPE_FIXERS
 
@@ -38,6 +40,7 @@ suffix_to_filekind = TYPES.suffix_to_filekind
 filekind_to_suffix = TYPES.filekind_to_suffix
 get_all_tpninfos = TYPES.get_all_tpninfos
 
+
 from crds.jwst.pipeline import header_to_reftypes, header_to_pipelines
 
 # =======================================================================
@@ -46,7 +49,7 @@ MODEL = None
 
 def get_datamodels():
     try:
-        from jwst import datamodels  # this is fatal.
+        from stdatamodels.jwst import datamodels  # this is fatal.
     except ImportError:
         log.error(
             "CRDS requires installation of the 'jwst' package to operate on JWST files.")
@@ -99,7 +102,7 @@ def match_context_key(key):
 
 # =======================================================================
 
-REF_EXT_RE = re.compile(r"\.fits|\.r\dh$")
+REF_EXT_RE = re.compile(r"\.(fits|r\dh)$")
 
 @utils.cached
 def get_file_properties(filename):
@@ -456,16 +459,44 @@ def filekind_to_keyword(filekind):
 def warn_filekind_once(filekind):
     log.warning("No apparent JWST cal code data models schema support for", log.srepr(filekind))
 
-def locate_file(refname, mode=None):
+def locate_file(refname, mode=None, parameters=None):
     """Given a valid reffilename in CDBS or CRDS format,  return a cache path for the file.
     The aspect of this which is complicated is determining instrument and an instrument
     specific sub-directory for it based on the filename alone,  not the file contents.
     """
+    if parameters is None:
+        parameters = dict()
     if mode is  None:
         mode = config.get_crds_ref_subdir_mode(observatory="jwst")
+
     if mode == "instrument":
-        instrument = utils.file_to_instrument(refname)
-        rootdir = locate_dir(instrument, mode)
+
+        # Check if the file is already in the local cache
+        for instrument in INSTRUMENTS:
+            if instrument != 'all':
+                rootdir = locate_dir(instrument, mode)
+                if os.path.exists(os.path.join(rootdir, os.path.basename(refname))):
+                    break
+        else:
+            rootdir = None
+
+        # Not in local cache. Try various other methods.
+        if rootdir is None:
+            try:
+                instrument = utils.header_to_instrument(parameters)
+            except KeyError:
+                log.verbose('Cannot find instrument in header. Trying from file itself...', verbosity=80)
+                try:
+                    instrument = utils.file_to_instrument(refname)
+                except FileNotFoundError:
+                    log.verbose('Cannot find instrument from non-existent file.', verbosity=80)
+                    log.verbose('Attempt to contact server for meta information', verbosity=80)
+
+                    # If there is a server, get the instrument from there.
+                    instrument = api.get_file_info(api.get_default_context(observatory='jwst'), os.path.basename(refname))['instrument']
+
+            rootdir = locate_dir(instrument, mode)
+
     elif mode == "flat":
         rootdir = config.get_crds_refpath("jwst")
     else:

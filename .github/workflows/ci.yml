@@ -1,15 +1,14 @@
 name: CI
 
 on:
-  ## uncomment before merging to master once test suite is finalized
   push:
     branches:
-    - master
+    - main
     tags:
       - '*'
   pull_request:
     branches:
-    - master
+    - main
   workflow_dispatch:
 
 concurrency:
@@ -43,14 +42,15 @@ jobs:
           - ubuntu-latest
           - macos-latest
         python-version:
-          - '3.10'
           - '3.11'
           - '3.12'
+          # if this breaks, add an upper pin to `requires-python` and revert this to the latest working version
+          - '3.*'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           fetch-depth: 0
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: mamba-org/setup-micromamba@d7c9bd84e824b79d2af72a2d4196c7f4300d3476  # v3.0.0
         with:
           environment-name: crds-testing
           create-args: >-
@@ -71,7 +71,7 @@ jobs:
       - run: pip install roman-datamodels git+https://github.com/spacetelescope/jwst
       - run: pip uninstall --yes crds && ./install && pip install .[submission,test,docs,synphot]
       - id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5  # v4.0.2
         with:
           path: |
             ${{ needs.cache.outputs.path }}

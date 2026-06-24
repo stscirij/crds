@@ -24,6 +24,7 @@ from asdf.tags.core import NDArrayType
 
 # =======================================================================
 
+from crds import api
 from crds.core import rmap, config, utils, timestamp, log, exceptions
 from crds.certify import generic_tpn
 from crds import data_file
@@ -51,7 +52,7 @@ HERE = os.path.dirname(__file__) or "."
 
 # Stub like HST for now
 
-def header_to_reftypes(header, context="roman-operational"):
+def header_to_reftypes(header, context="latest"):
     """Based on `header` return the default list of appropriate reference type names.
 
     >>> ref_types = header_to_reftypes(None)
@@ -61,7 +62,7 @@ def header_to_reftypes(header, context="roman-operational"):
     """
     return []  # translates to "all types" for instrument defined by header.
 
-def header_to_pipelines(header, context="roman-operational"):
+def header_to_pipelines(header, context="latest"):
     """Based on `header` return the default list of appropriate reference type names.
 
     >>> header_to_pipelines(None)
@@ -198,28 +199,32 @@ def decompose_newstyle_name(filename):
     """
     path, parts, ext = _get_fields(filename)
     observatory = parts[0]
-    serial = list_get(parts, 3, "")
-
-    if ext == ".pmap":
-        assert len(parts) in [1,2], "Invalid .pmap filename " + repr(filename)
-        instrument, filekind = "", ""
-        serial = list_get(parts, 1, "")
-    elif ext == ".imap":
-        assert len(parts) in [2,3], "Invalid .imap filename " + repr(filename)
-        instrument = parts[1]
-        filekind = ""
-        serial = list_get(parts, 2, "")
-    else:
-        assert len(parts) in [3,4], "Invalid filename " + repr(filename)
-        instrument = parts[1]
-        filekind = parts[2]
+    if len(parts) < 5:
         serial = list_get(parts, 3, "")
-
+        if ext == ".pmap":
+            assert len(parts) in [1,2], "Invalid .pmap filename " + repr(filename)
+            instrument, filekind = "", ""
+            serial = list_get(parts, 1, "")
+        elif ext == ".imap":
+            assert len(parts) in [2,3], "Invalid .imap filename " + repr(filename)
+            instrument = parts[1]
+            filekind = ""
+            serial = list_get(parts, 2, "")
+        else:
+            assert len(parts) in [3,4], "Invalid filename " + repr(filename)
+            instrument = parts[1]
+            filekind = parts[2]
+            serial = list_get(parts, 3, "")
+    else:
+        # SSC Filekind
+        instrument = parts[1]
+        filekind = parts[3]
+        serial = parts[4] if ext != ".yaml" else parts[4].replace("ctx", "")
+    
     # Don't include filename in these or it messes up crds.certify unique error tracking.
-
     assert instrument in INSTRUMENTS+[""], "Invalid instrument " + repr(instrument)
     assert filekind in FILEKINDS+[""], "Invalid filekind " + repr(filekind)
-    assert re.fullmatch(r"\d*", serial), "Invalid id field " + repr(id)
+    assert re.fullmatch(r"\d*", serial), "Invalid id field " + repr(serial)
     # extension may vary for upload temporary files.
 
     return path, observatory, instrument, filekind, serial, ext
@@ -350,12 +355,49 @@ def ref_properties_from_header(filename):
             "Can't identify instrument of", repr(name), ":", str(exc)) from exc
     try:
         filekind = header.get('ROMAN.META.REFTYPE', 'UNDEFINED').lower()
+        # Not all headers are roman datamodels.
+        if filekind == 'undefined':
+            filekind = header.get('META.REFTYPE', 'UNDEFINED').lower()
+        if filekind == 'undefined':
+            filekind = header.get('REFTYPE', 'UNDEFINED').lower()
         assert filekind in FILEKINDS, "Invalid file type " + repr(filekind)
     except Exception as exc:
         raise exceptions.CrdsNamingError("Can't identify ROMAN.META.REFTYPE of", repr(name))
     return path, "roman", instrument, filekind, serial, ext
 
 # =============================================================================
+
+def ssc_reference_translations(pfx):
+    return {
+        f'{pfx}.INSTRUMENT': f'{pfx}.INSTRUMENT.NAME',
+        f'{pfx}.OPTICAL_ELEMENT': f'{pfx}.INSTRUMENT.OPTICAL_ELEMENT',
+        f'{pfx}.DETECTOR': f'{pfx}.INSTRUMENT.DETECTOR',
+        f'{pfx}.ORIGIN': 'SSC',
+    }
+
+
+def modified_ssc_yaml_header(header):
+    """Modify header dictionary loaded from an SSC YAML reference file
+    to match CRDS expectations for Roman reference file headers."""
+    # Identify SSC YAML files by ORIGIN and FILE_FORMAT
+    if header.get('ROMAN.META.ORIGIN', header.get('META.ORIGIN', None)) == 'IPAC/SSC':
+        meta_header = {k:v for k, v in header.items() if k.startswith('ROMAN.META')}
+        meta_header.update({'ROMAN.'+k:v for k, v in header.items() if k.startswith('META.')})
+        return meta_header, True
+    return header, False
+
+
+def apply_ssc_conversions(header):
+    """Converts missing or malformed parkey values received from SSC into valid CRDS formats."""
+    pfx = "ROMAN.META"
+    if header[f"{pfx}.EXPOSURE.TYPE"] == "UNDEFINED":
+        instr, optelem = header.get(f"{pfx}.INSTRUMENT.NAME"), header.get(f"{pfx}.INSTRUMENT.OPTICAL_ELEMENT")
+        if instr and optelem:
+            header[f"{pfx}.EXPOSURE.TYPE"] = "_".join([instr.upper(), optelem.upper()])
+    detector = header.get(f"{pfx}.INSTRUMENT.DETECTOR")
+    if instr.lower() == "wfi" and len(detector.split(",")) == 18:
+        header[f"{pfx}.INSTRUMENT.DETECTOR"] = "N/A" # All detectors
+    return header
 
 def reference_keys_to_dataset_keys(rmapping, header):
     """Given a header dictionary for a reference file, map the header back to keys
@@ -476,15 +518,21 @@ def reference_keys_to_dataset_keys(rmapping, header):
     crds.core.exceptions.InvalidUseAfterFormat: Bad USEAFTER time format = 'bad user after'
     """
     header = dict(header)
-
+    # if parameter reference file (contains "-"), there is no "ROMAN" prefix
+    paramfile = True if len(rmapping.name.split("-")) > 1 else False
+    prefix = "META" if paramfile is True else "ROMAN.META"
     # Basic common pattern translations
     translations = {
-        "ROMAN.META.EXPOSURE.P_EXPTYPE" : "ROMAN.META.EXPOSURE.TYPE",
-        "ROMAN.META.INSTRUMENT.P_DETECTOR"  : "ROMAN.META.INSTRUMENT.DETECTOR",
-        "ROMAN.META.INSTRUMENT.P_OPTICAL_ELEMENT": "ROMAN.META.INSTRUMENT.OPTICAL_ELEMENT",
+        f"{prefix}.EXPOSURE.P_EXPTYPE": f"{prefix}.EXPOSURE.TYPE",
+        f"{prefix}.INSTRUMENT.P_DETECTOR"  : f"{prefix}.INSTRUMENT.DETECTOR",
+        f"{prefix}.INSTRUMENT.P_OPTICAL_ELEMENT": f"{prefix}.INSTRUMENT.OPTICAL_ELEMENT",
     }
-
-    # Rmap header reference_to_dataset field tranlations,  can override basic!
+    # SSC translations if applicable
+    header, ssc = modified_ssc_yaml_header(header)
+    if ssc is True:
+        translations = ssc_reference_translations(prefix)
+       
+    # Rmap header reference_to_dataset field translations,  can override basic!
     try:
         translations.update(rmapping.reference_to_dataset)
     except AttributeError:
@@ -517,20 +565,22 @@ def reference_keys_to_dataset_keys(rmapping, header):
             if rval not in [None, "UNDEFINED"] and rval != dval:
                 log.info("Setting", repr(dkey), "=", repr(dval),
                          "to value of", repr(rkey), "=", repr(rval))
-                header[dkey] = rval
+                header[dkey] = rval.upper()
 
-    if "ROMAN.META.SUBARRAY.NAME" not in header:
-        header["ROMAN.META.SUBARRAY.NAME"] = "UNDEFINED"
-
-    if "ROMAN.META.EXPOSURE.TYPE" not in header:
-        header["ROMAN.META.EXPOSURE.TYPE"] = "UNDEFINED"
+    if f"{prefix}.SUBARRAY.NAME" not in header:
+        header[f"{prefix}.SUBARRAY.NAME"] = "UNDEFINED"
+    if f"{prefix}.EXPOSURE.TYPE" not in header:
+        header[f"{prefix}.EXPOSURE.TYPE"] = "UNDEFINED"
+    if ssc is True:
+        header = apply_ssc_conversions(header)
+        
 
     # If USEAFTER is defined,  or we're configured to fake it...
     #   don't invent one if its missing and we're not faking it.
-    if "ROMAN.META.USEAFTER" in header or config.ALLOW_BAD_USEAFTER:
+    if f"{prefix}.USEAFTER" in header or config.ALLOW_BAD_USEAFTER:
 
         # Identify this as best as possible,
-        filename = header.get("ROMAN.META.FILENAME", None) or rmapping.filename
+        filename = header.get(f"{prefix}.FILENAME", None) or rmapping.filename
 
         reformatted = timestamp.reformat_useafter(filename, header).split()
         dt_string = f"{reformatted[0]} {reformatted[1]}"
@@ -584,7 +634,7 @@ def filekind_to_keyword(filekind):
     """
     raise NotImplementedError("filekind_to_keyword not implemented for Roman")
 
-def locate_file(refname, mode=None):
+def locate_file(refname, mode=None, parameters=None):
     """Given a valid reffilename in CDBS or CRDS format,  return a cache path for the file.
     The aspect of this which is complicated is determining instrument and an instrument
     specific sub-directory for it based on the filename alone,  not the file contents.
@@ -616,15 +666,44 @@ def locate_file(refname, mode=None):
     ValueError: Unhandled reference file location mode 'other'
 
     """
+    if parameters is None:
+        parameters = dict()
     if mode is  None:
         mode = config.get_crds_ref_subdir_mode(observatory="roman")
+
     if mode == "instrument":
-        instrument = utils.file_to_instrument(refname)
-        rootdir = locate_dir(instrument, mode)
+
+        # Check if the file is already in the local cache
+        for instrument in INSTRUMENTS:
+            if instrument != 'all':
+                rootdir = locate_dir(instrument, mode)
+                if os.path.exists(os.path.join(rootdir, os.path.basename(refname))):
+                    break
+        else:
+            rootdir = None
+
+        # Not in local cache. Try various other methods.
+        if rootdir is None:
+            try:
+                instrument = utils.header_to_instrument(parameters)
+            except KeyError:
+                log.verbose('Cannot find instrument in header. Trying from file itself...', verbosity=80)
+                try:
+                    instrument = utils.file_to_instrument(refname)
+                except FileNotFoundError:
+                    log.verbose('Cannot find instrument from non-existent file.', verbosity=80)
+                    log.verbose('Attempt to contact server for meta information', verbosity=80)
+
+                    # If there is a server, get the instrument from there.
+                    instrument = api.get_file_info(api.get_default_context(observatory='roman'), os.path.basename(refname))['instrument']
+
+            rootdir = locate_dir(instrument, mode)
+
     elif mode == "flat":
         rootdir = config.get_crds_refpath("roman")
     else:
         raise ValueError("Unhandled reference file location mode " + repr(mode))
+
     return  os.path.join(rootdir, os.path.basename(refname))
 
 def locate_dir(instrument, mode=None):
