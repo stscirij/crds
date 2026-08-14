@@ -1,3 +1,23 @@
+13.2.7 (2026-07-15)
+===================
+
+ROMAN
+-----
+
+- Bugfixes for Roman s3 api calls (`#1219
+  <https://github.com/spacetelescope/crds/issues/1219>`_)
+
+
+13.2.6 (2026-07-13)
+===================
+
+ROMAN
+-----
+
+- add wfi_flat to all tpn (`#1220
+  <https://github.com/spacetelescope/crds/issues/1220>`_)
+
+
 13.2.5 (2026-06-18)
 ===================
 
